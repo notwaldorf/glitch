@@ -98,7 +98,7 @@ window.onload = () => {
   document.body.addEventListener('keydown', (event) => {
     if (event.keyCode === 37) { // left
       window.location = `./day-${today-1}.html`
-    } else if (event.keyCode === 39) {  // right
+    } else if (event.keyCode === 39 && today < 31) {  // right
       window.location = `./day-${today+1}.html`
     }
   });
