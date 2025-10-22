@@ -1,9 +1,0 @@
-{
-  "name": "part-theme-demo",
-  "version": "0.0.1",
-  "description": "Playing around with :part and :theme",
-  "license": "MIT",
-  "dependencies": {
-    "part-theme": "PolymerLabs/part-theme#more-shenanigans"
-  }
-}
