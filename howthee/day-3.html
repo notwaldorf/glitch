@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>inktober experiment</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="style.css">
+    <script src="sheriff.js"></script>
+    <style>
+      /* The special bits */
+      .pixel {
+        background: #C3FC73;
+        border-radius: 4px;
+        margin: 2px;
+      }
+      
+
+      .pixel > span {
+        /* Flip backwards */
+        transform: rotateY(180deg);
+        transform-style: preserve-3d;
+        transition: transform .3s ease;
+        /* Hide */
+        opacity: 0;
+      }
+
+      .pixel.show {
+        background: white;
+      }
+      .pixel.show > span {
+        opacity: 1;
+        transform: rotateY(0);
+      }
+    </style>
+  </head>
+  <body>
+    <h1>#inktober: an experiment</h1>
+    <div class="an-art" title="I'm starting with the 'I'm the sheriff of circle-punch', and adding a feature every day. To see the previous days, look at the Glitch code or go to howthee.glitch.me/day-x.html.">
+      <pre id="output"></pre>
+    </div>
+    <div class="an-art-label">
+      <button class="action" onclick="window.location = `https://howthee.glitch.me/day-${today-1}.html`">🔙</button>
+      <div>
+        <b>Day 3</b>: A Memory Game.
+      </div>
+      <button class="action" onclick="window.location = `https://howthee.glitch.me/day-${today+1}.html`">🔜</button>
+    </div>
+
+    <footer>
+      <hr>
+      <h3>a weird art experiment by <a href="https://twitter.com/notwaldorf">monica</a></h3>
+    </footer>
+    <div class="glitchButton" style="position:fixed;top:20px;right:20px;"></div>
+    <script src="https://button.glitch.me/button.js"></script>
+  </body>
+  <script>
+    const today = 3;
+    output.innerHTML = getSheriff('🚫');
+    
+    let showing = null;
+    output.addEventListener('click', (event) => {
+      let target;
+      if (event.target.localName === 'span') {
+        target = event.target.parentElement;
+      } else if (event.target.localName === 'div') {
+        target = event.target;
+      } else {
+        return;
+      }
+      
+      // If it's already showing, bail.
+      if (target.classList.contains('show')) {
+        return;
+      }
+      
+      target.classList.add('open');
+      target.classList.add('show');
+      
+      setTimeout(() => {
+        if (showing) {
+          // Just opened the second card, check if they're equal.
+          if (showing.firstElementChild.textContent != target.firstElementChild.textContent) {
+            // No match, flip them back, unless it was a head man.
+            if (showing.firstElementChild.textContent !== '🤠') {
+              showing.classList.remove('open');
+              showing.classList.remove('show');
+            }
+            if (target.firstElementChild.textContent !== '🤠') {
+              target.classList.remove('open');
+              target.classList.remove('show');
+            }
+          }
+          // Reset the game.
+          showing = null;
+        } else {
+          // Opening the first card.
+          showing = target;
+        }
+      }, 500);
+    });
+  </script>
+</html>

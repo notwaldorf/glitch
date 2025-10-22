@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="https://glitch.com/favicon.ico" />
+    <title>Cello practice</title>
+    <script src="https://cdn.jsdelivr.net/npm/vexflow@4.2.2/build/cjs/vexflow.js"></script>
+
+    <link rel="stylesheet" href="style.css" />
+    <script src="script.js" defer></script>
+  </head>
+  <body>
+    <div class="wrapper">
+      <h2>Cello practice on the go</h2>
+
+      <div class="horizontal">
+        <div>key</div>
+        <button onclick="switchKey(event)" class="active" data-key="D">
+          D
+        </button>
+        <button onclick="switchKey(event)" data-key="G">G</button>
+        <button onclick="switchKey(event)" data-key="C">C</button>
+        
+        <button onclick="next()">next</button>
+      </div>
+
+      <div id="staff"></div>
+
+      <div id="container">
+        <div id="cello">
+          <div data-note="C2" class="open">C</div>
+          <div data-note="G2" class="open">G</div>
+          <div data-note="D3" class="open">D</div>
+          <div data-note="A3" class="open">A</div>
+
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+          <div data-note="D2">D</div>
+          <div data-note="A2">A</div>
+          <div data-note="E3">E</div>
+          <div data-note="B3">B</div>
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+          <div data-note="E2">E</div>
+          <div data-note="B2">B</div>
+          <div data-note="F#3">F#</div>
+          <div data-note="C#4">C#</div>
+          <div data-note="F2">F</div>
+          <div data-note="C3">C</div>
+          <div data-note="G3">G</div>
+          <div data-note="D4">D</div>
+        </div>
+        <div id="strings">
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

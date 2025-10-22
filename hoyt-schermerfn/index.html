@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Hoyt-Schermfndbsbsvdsdrn</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://fonts.googleapis.com/css?family=Pangolin&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css">
+  </head>  
+  <body>
+    <h1 class="box">Hoyt-Schermfndbsbsvdsdrn</h1>
+    
+    <div class="content">
+      <div class="horizontal">
+        <b>@emilywithcurls</b>
+        <span>&nbsp;&nbsp;at&nbsp;&nbsp;</span>
+        <b id="when"></b>
+      </div>
+      <pre id="what"></pre>
+    </div>
+    
+    <button onclick="hoyt()" class="button box thin">Show me another one</button>
+    
+    <footer>
+      Made by <a href="https://twitter.com/notwaldorf">Monica</a> using 
+      <a href="https://twitter.com/emilywithcurls">Emily</a>'s
+      tweets and clouds. <a href="https://twitter.com/emilywithcurls/status/1172218287255707649">What is this, I don't get it?</a>
+    </footer>
+    <div class="glitchButton" style="position:fixed;top:20px;right:20px;"></div>
+    <script src="https://button.glitch.me/button.js"></script>
+  </body>
+  <script>
+    let hoyts;
+    getAllHoyts();
+  
+    async function getAllHoyts() {
+      hoyts = await (await fetch('hoyt.json')).json();
+      hoyt();
+    }
+    function hoyt() {
+      const index = Math.floor(Math.random() * hoyts.length);
+      document.getElementById('what').innerHTML = hoyts[index].text;
+      document.getElementById('when').textContent = hoyts[index].time;
+    }
+  </script>
+</html>

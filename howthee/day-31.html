@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>inktober experiment</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="style.css">
+    <script src="sheriff.js"></script>
+    <style>
+      #output {
+        z-index: 10;
+      }
+      .blood-wrapper {
+        display: flex;
+        flex-direction: row;
+        position: relative;
+      }
+      /* Blood drip inspired by https://codepen.io/sashatran/pen/OWvNKv */
+      .blood, .blood2 {
+        display: inline-block;
+        z-index: 2;
+        left: 20px;
+        width: 160px;
+        height: 15px;
+        background: red;
+        border-radius: 0 0 100px 100px;
+        position: absolute;
+      }
+      .blood2 {
+        left: 120px;
+      }
+      @media screen and (max-width: 700px) {
+        .blood2 {
+          width: 100px;
+        }
+      }
+      .blood:before, .blood:after, .blood2:before, .blood2:after  {
+        position: absolute;
+        content: '';
+        background: red;
+        border-radius: 0 0 100px 100px;
+        animation: 4s drip infinite ease;
+      }  
+      .blood:before {
+        left: 10px;
+        width: 20px;
+        height: 30px;
+      }
+      .blood:after {
+        left: 34px;
+        width: 20px;
+        height: 60px;
+        animation-delay: 1.5s;
+      }
+      .blood2:before {
+        width: 20px;
+        height: 50px;
+        animation-delay: 1s;
+      }
+      .blood2:after {
+        left: 30px;
+        width: 20px;
+        height: 30px;
+        animation-delay: 0.5s;
+      }
+      .shine {
+        position: absolute;
+        z-index: 2;
+        background: white;
+        border-radius: 100px;
+        animation: 4s drip infinite ease;
+      }
+      .blood .shine {
+        top: 14px;
+        left: 24px;
+        width: 3px;
+        height: 9px;
+      }
+       .blood2 .shine {
+        top: 14px;
+        left: 44px;
+        width: 3px;
+        height: 9px;
+        animation-delay: 0.5s;
+      }
+      @keyframes drip { 100% { transform: translateY(10px); }}
+      
+      /* Head roll */
+      .pixel.head.animate {
+        animation: spin 2s ease;
+        animation-delay: 2s;
+      }
+      
+      @keyframes spin {
+        from { transform: translateX(0) rotate(0deg); }
+        to { transform: translateX(150px) rotate(360deg); }
+      }
+      
+      /* Thanks http://pajasevi.github.io/CSSnowflakes/ */
+      .ghost {
+        position: fixed;
+        top: -10%;
+        z-index: 9999;
+        cursor: default;
+        animation: fall 10s linear infinite, shake 10s linear infinite;
+      }
+      
+      @keyframes shake {
+        0%  { transform: translateX(0px) scale(1,1) }
+        50% { transform: translateX(80px) scale(2,2) }
+        100%{ transform: translateX(0px) scale(1,1) } 
+      }
+      @keyframes fall { 0% {top:-10%} 100%{top:100%} }
+    </style>
+  </head>
+  <body>
+    <h1>#inktober: an experiment</h1>
+    <div class="an-art" title="I'm starting with the 'I'm the sheriff of circle-punch', and adding a feature every day. To see the previous days, look at the Glitch code or go to howthee.glitch.me/day-x.html.">
+      <pre id="output"></pre>
+      <div class="blood-wrapper">
+        <div class="blood">
+          <div class="shine"></div>
+        </div>
+        <div class="blood2">
+          <div class="shine"></div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="an-art-label">
+      <button class="action" onclick="window.location = `https://howthee.glitch.me/day-${today-1}.html`">🔙</button>
+      <div>
+        <b>Day 31</b>: Happy Halloween!
+      </div>
+      <button class="action"></button>
+    </div>
+    
+    <footer>
+      <hr>
+      <h3>a weird art experiment by <a href="https://twitter.com/notwaldorf">monica</a></h3>
+    </footer>
+    <div class="glitchButton" style="position:fixed;top:20px;right:20px;"></div>
+    <script src="https://button.glitch.me/button.js"></script>
+  </body>
+  <script>
+    const today = 31; 
+    output.innerHTML = getSheriff('😱');
+    
+    // Stop the head spinning. after one spin.
+    head.addEventListener('animationend', () => {
+      head.classList.remove('animate');
+      head.style.transform = 'translateX(150px)';
+    });
+    head.classList.add('animate');
+    
+    // A little spooky cursor.
+    document.body.style.cursor = document.body.parentNode.style.cursor = 'none';
+    var c = document.createElement('div');
+    c.innerHTML = '🕷';
+    c.style.fontSize = '30px';
+    c.style.position = 'absolute';
+    c.style.zIndex = 9999;
+    c.style.pointerEvents = 'none';
+    document.body.appendChild(c);
+    window.addEventListener('mousemove', function(event) {
+      c.style.left = event.pageX + 'px';
+      c.style.top = event.pageY + 'px';
+    });
+    
+    // Add a couple falling ghosts and pumpkins.
+    const ghosts = 20;
+    for (let i = 0; i < ghosts; i++) {
+      const ghost = document.createElement('div');
+      ghost.textContent = Math.random() > 0.5 ? '👻' : '🎃';
+      ghost.classList.add('ghost');
+      ghost.style.left = i / ghosts * 100 + '%';
+      
+      ghost.style['animation-delay'] = `${getRandomInt(8)}s,${getRandomInt(8)}s`;
+      document.body.appendChild(ghost);
+    }
+
+    function getRandomInt(max) {
+      return Math.floor(Math.random() * Math.floor(max));
+    }
+
+  </script>
+</html>

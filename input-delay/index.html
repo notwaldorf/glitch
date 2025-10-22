@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Typing delay experiment</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Mono:400,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css">
+  </head>  
+  <body>
+    <h1>
+      How annoying is too annoying?
+    </h1>
+    <p>
+      This is an experiment to see what amount of delay is too annoying for a user interaction like typing.
+      You can compare this to the similar <a href="https://audio-delay.glitch.me">audio experiment</a>, for playing
+      music.
+      Here are some presets; make sure to type a lot of characters at once for the full effect.
+      <br>
+      <button onclick="update(10)">fine</button>
+      <button onclick="update(30)">could be worse</button>
+      <button onclick="update(50)">it's worse</button>
+      <button onclick="update(100)">really not great</button>
+      <button onclick="update(200)">we're done here</button>
+      <button onclick="update()">surprise me</button>
+      <br>
+      <button onclick="update(-1)">variable latency mode (this is a horror)</button>
+    </p>
+    <div>
+      <span>Typing delay (you can change this)</span><br>
+      <label><input id="delay" value="5"> <b>ms</b></label>
+    </div>
+    
+    <span>Type here:<br></span>
+    <div class="wrapper">
+      <div id="output"></div>
+      <textarea id="textarea" spellcheck="false"></textarea>
+    </div>
+    
+    
+    <footer>Made by <a href="https://twitter.com/notwaldorf">Monica</a> who was initially annoyed by something else.</footer>
+    <div class="glitchButton" style="position:fixed;top:20px;right:20px;"></div>
+    <script src="https://button.glitch.me/button.js"></script>
+  </body>
+  
+  <script>
+    const textarea = document.getElementById('textarea');
+    const output = document.getElementById('output');
+   
+    let variableMode = false;
+    
+    /* iOS has an arbitrary left margin of 3px that isn't present
+     * in any other browser, and means the cursor overlaps the fake text.
+     * Yes, I've had this in my brain since I worked on iron-autogrow-textarea.
+     */
+    const IS_IOS = navigator.userAgent.match(/iP(?:[oa]d|hone)/);
+    if (IS_IOS) {
+      textarea.style.marginLeft = '-3px';
+    }
+    
+    // Don't let firefox do the useful caching of the old typing since it ruins the experiment.
+    textarea.value = '';  
+    textarea.focus();
+    
+    function blockFor(t) {
+      const start = performance.now();
+      while(performance.now() - start < t);
+    }
+
+    textarea.addEventListener('input', (e) => {
+      const t = textarea.value;
+      
+      setTimeout(() => {
+        let t = parseFloat(delay.value);
+        if (variableMode) {
+          t = Math.floor(Math.random() * 200)
+        }
+        delay.value = t;
+        blockFor(t);
+        output.innerHTML = textarea.value;
+      });
+    });
+    
+    function update(n) {
+      variableMode = false;
+      if (n === undefined) {
+        n = Math.floor(Math.random() * 500)
+      } else if (n === -1) {
+        variableMode = true;
+        n = '0-200'
+      }
+      delay.value = n;
+      textarea.focus();
+    }
+  </script>
+</html>

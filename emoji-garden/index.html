@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>🌱🐰emoji-garden</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+
+    <style>
+      html {
+        height: 100%;
+      }
+      body {
+        box-sizing: border-box;
+        text-align: center;
+        font-family: monospace;
+        padding: 40px auto;
+        -webkit-font-smoothing: antialiased;
+        background: linear-gradient(35deg, rgb(215, 129, 173), rgb(245, 209, 176));
+        height: 100%;
+        margin: 0;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+      }
+      a:link, a:visited {
+        color: #D4E6DF;
+      }
+      
+      #output {
+        display: inline-block;
+        font-size: calc(16px + 2.5vw);
+        line-height: 1;
+        background-color: #D4E6DF;
+        box-shadow: rgba(139, 52, 97, 0.3) 0px 1vh 3vh;
+        border-radius: 3vw;
+        padding: 20px;
+        white-space: nowrap;
+      }
+      
+      label {
+        display: inline-block;
+        font-weight: bold;
+        font-size: 40px;
+        vertical-align: middle;
+      }
+      input {
+        width: 26px;
+        padding: 8px 10px;
+        border: 0;
+        background: rgba(255,255,255,0.5);
+        margin-bottom: 20px;
+      }
+      button {
+        box-sizing: border-box;
+        color: #fff;
+        background: #57A530;
+        font-weight: bold;
+        margin-left: 15px;
+        padding: 8px 10px;
+        border: 0;
+        cursor: pointer;
+        font-family: inherit;
+        font-size: inherit;
+      }
+      
+      @media (max-width: 600px) {
+        label {
+          font-size: 20px;
+        }
+      }
+    </style>
+    <script src="polyfill.js"></script>
+    <script src="tracery.min.js"></script>
+  </head>
+  <body>
+    <h1>emoji-garden</h1>
+    <div>
+      <label for="rows">🏁</label>
+      <input id="cols" type="number" value="10">
+      x
+      <input id="rows" type="number" value="10">
+      &nbsp;
+      <label for="visitors">🐰</label>
+      <input id="visitors" type="number" value="3">
+      <label for="snacks">🍃</label>
+      <input id="snacks" type="number" value="5">
+
+      <button onclick="doAGarden()">Refresh!</button>
+    </div>
+    <br>
+    <div id="output"></div>
+    <p>
+      planted with ⛅️ by <a href="https://twitter.com/notwaldorf">monica</a>. see the 
+      <a href="https://glitch.com/edit/#!/emoji-garden">code</a>.
+    </p>
+  </body>
+  <script src="garden.js"></script>
+  <script>
+    setTimeout(doAGarden, 200);
+  </script>
+</html>

@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>inktober experiment</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="style.css">
+    <script src="sheriff.js"></script>
+    <style> 
+      html {
+        --size: 6px;
+      }
+      .an-art {
+        display: block;
+      }
+      .output, .pixel, .output span {
+        cursor: pointer;
+        -webkit-user-select: none; /* Safari 3.1+ */
+        -moz-user-select: none; /* Firefox 2+ */
+        -ms-user-select: none; /* IE 10+ */
+        user-select: none; /* Standard syntax */
+      }
+        
+      /* Thanks to https://codepen.io/lbebber/pen/ypgql */
+      .glitch {
+        color: white;
+        transform: scale(1.2, 1.2);
+        position:relative;
+        width: var(--distance);
+        margin:0 auto;
+      }
+      .glitch:after, .glitch:before {
+        content: attr(data-text);
+        position: absolute;
+        top: 0;
+        color: white;
+        background: white;
+        overflow: hidden;
+      }
+      .glitch:after {
+        left: var(--size);
+        text-shadow: 2px 0 magenta; 
+        animation:noise-anim 2s infinite linear alternate-reverse;
+      }
+      .glitch:before {
+        left: calc(1-var(--size));
+        text-shadow: 2px 0 cyan; 
+        animation:noise-anim-2 3s infinite linear alternate-reverse;
+      }
+      @keyframes noise-anim {
+        0% { clip: rect(86px, 200px, 58px, 0); }
+        5% { clip: rect(55px, 200px, 79px, 0); }
+        10% { clip: rect(37px, 200px, 20px, 0); }
+        15% { clip: rect(34px, 200px, 49px, 0); }
+        20% { clip: rect(2px, 200px, 5px, 0); }
+        25% { clip: rect(88px, 200px, 5px, 0); }
+        30% { clip: rect(87px, 200px, 1px, 0); }
+        35% { clip: rect(100px, 200px, 77px, 0); }
+        40% { clip: rect(20px, 200px, 8px, 0); }
+        45% { clip: rect(8px, 200px, 13px, 0); }
+        50% { clip: rect(97px, 200px, 47px, 0); }
+        55% { clip: rect(5px, 200px, 6px, 0); }
+        60% { clip: rect(31px, 200px, 50px, 0); }
+        65% { clip: rect(30px, 200px, 88px, 0); }
+        70% { clip: rect(88px, 200px, 24px, 0); }
+        75% { clip: rect(33px, 200px, 80px, 0); }
+        80% { clip: rect(67px, 200px, 87px, 0); }
+        85% { clip: rect(96px, 200px, 79px, 0); }
+        90% { clip: rect(33px, 200px, 34px, 0); }
+        95% { clip: rect(72px, 200px, 65px, 0); }
+        100% { clip: rect(29px, 200px, 38px, 0); }
+      }
+      
+      @keyframes noise-anim-2 {
+        0% { clip: rect(58px, 200px, 47px, 0); }
+        5% { clip: rect(54px, 200px, 35px, 0); }
+        10% { clip: rect(99px, 200px, 13px, 0); }
+        15% { clip: rect(99px, 200px, 50px, 0); }
+        20% { clip: rect(86px, 200px, 100px, 0); }
+        25% { clip: rect(30px, 200px, 81px, 0); }
+        30% { clip: rect(12px, 200px, 9px, 0); }
+        35% { clip: rect(14px, 200px, 62px, 0); }
+        40% { clip: rect(95px, 200px, 38px, 0); }
+        45% { clip: rect(89px, 200px, 10px, 0); }
+        50% { clip: rect(17px, 200px, 30px, 0); }
+        55% { clip: rect(23px, 200px, 1px, 0); }
+        60% { clip: rect(16px, 200px, 73px, 0); }
+        65% { clip: rect(52px, 200px, 6px, 0); }
+        70% { clip: rect(39px, 200px, 57px, 0); }
+        75% { clip: rect(97px, 200px, 86px, 0); }
+        80% { clip: rect(30px, 200px, 27px, 0); }
+        85% { clip: rect(45px, 200px, 91px, 0); }
+        90% { clip: rect(26px, 200px, 33px, 0); }
+        95% { clip: rect(90px, 200px, 88px, 0); }
+        100% { clip: rect(15px, 200px, 61px, 0); }
+      }
+    </style>
+  </head>
+  <body>
+    <h1>#inktober: an experiment</h1>
+    <div class="an-art" title="I'm starting with the 'I'm the sheriff of circle-punch', and adding a feature every day. To see the previous days, look at the Glitch code or go to howthee.glitch.me/day-x.html. Thanks to Lucas Bebber for the glitchy css.">
+      <pre id="output"></pre>
+    </div>
+    <div class="an-art-label">
+      <button class="action" onclick="window.location = `https://howthee.glitch.me/day-${today-1}.html`">🔙</button>
+      <div>
+        <b>Day 25</b>: The More You Move/Click the More it Glitches.
+      </div>
+      <button class="action" onclick="window.location = `https://howthee.glitch.me/day-${today+1}.html`">🔜</button>
+    </div>
+
+    <footer>
+      <hr>
+      <h3>a weird art experiment by <a href="https://twitter.com/notwaldorf">monica</a></h3>
+    </footer>
+    <div class="glitchButton" style="position:fixed;top:20px;right:20px;"></div>
+    <script src="https://button.glitch.me/button.js"></script>
+  </body>
+  <script>
+    const today = 25;
+    output.innerHTML = getSheriff('🎏');
+    let bonus = 0;
+    
+    const pixels = output.querySelectorAll('.pixel');
+    for (let i = 0; i < pixels.length; i++) {
+      pixels[i].setAttribute('data-text', pixels[i].textContent);
+    }
+    
+    function updateFontSize() {
+      const fontSize = parseInt(window.getComputedStyle(pixels[0]).fontSize);
+      document.documentElement.style.setProperty('--distance', fontSize + bonus + 'px');
+    }
+    
+    document.body.addEventListener('mousemove', doTheMove);
+    document.body.addEventListener('click', doTheClick);
+    animate();
+    
+    function animate() {
+      animationTimeout = setTimeout(function() {
+        animationFrame = window.requestAnimationFrame(animate);
+      }, 0.1);
+
+      // Style 20% of the pixels.
+      const howMany = 0.02 * pixels.length;
+      for (let i = 0; i < howMany; i++) {
+        const which = Math.floor(Math.random() * pixels.length);
+        if (pixels[which].classList.contains('glitch')) {
+          pixels[which].classList.remove('glitch');
+        } else {
+          pixels[which].classList.add('glitch');
+        }
+      }
+    }
+    
+    let totalDistance = 0;
+    function doTheMove(event) {
+      const distance = Math.sqrt(event.movementX*event.movementX + event.movementY*event.movementY);
+      totalDistance += distance;
+      
+      if (totalDistance > 50) {
+        totalDistance = 0;
+        bonus++;
+        updateFontSize();
+      }
+    }
+    function doTheClick(event) {
+      bonus += 5;
+      updateFontSize();
+    }
+  </script>
+</html>

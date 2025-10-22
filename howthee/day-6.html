@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>inktober experiment</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="style.css">
+    <script>
+      // Microphone access is disabled in Android for http.
+      if (location.protocol != 'https:') {
+        location.href = 'https:' + window.location.href.substring(window.location.protocol.length);
+      }
+    </script>
+    <script src="sheriff.js"></script>
+    <style>
+      button { cursor: pointer; }
+    </style>
+  </head>
+  <body>
+    <h1>#inktober: an experiment</h1>
+    <div class="an-art" title="I'm starting with the 'I'm the sheriff of circle-punch', and adding a feature every day. To see the previous days, look at the Glitch code or go to howthee.glitch.me/day-x.html.">
+      <pre id="output"></pre>
+    </div>
+    <div class="an-art-label">
+      <button class="action" onclick="window.location = `https://howthee.glitch.me/day-${today-1}.html`">🔙</button>
+      <div>
+        <b>Day 6</b>: Shout Into the Void. <button id="btnRecord">Start Shouting</button>
+     
+      </div>
+      <button class="action" onclick="window.location = `https://howthee.glitch.me/day-${today+1}.html`">🔜</button>
+    </div>
+
+    <footer>
+      <hr>
+      <h3>a weird art experiment by <a href="https://twitter.com/notwaldorf">monica</a></h3>
+    </footer>
+    <div class="glitchButton" style="position:fixed;top:20px;right:20px;"></div>
+    <script src="https://button.glitch.me/button.js"></script>
+  </body>
+  <script>
+    const today = 6;
+    window.defaultEmoji = '💥';
+    output.innerHTML = getSheriff();
+    output.style.opacity = 0;
+    
+    // The setup-the-audio bits.
+    let isRecording = undefined;
+    
+    let context, analyser;
+    const MAX_VOLUME = 60;
+    
+    btnRecord.addEventListener('click', () => {
+      if (isRecording === undefined) {
+        // Request microphone access.
+        if (navigator.mediaDevices) {
+          navigator.mediaDevices.getUserMedia({audio: true}).then(stream => {
+            
+            context = new (window.webkitAudioContext || AudioContext)();
+            analyser = context.createAnalyser();
+            analyser.smoothingTimeConstant = 0.3;
+            analyser.fftSize = 2048;
+            
+            // This is the important bit.
+            let source = context.createMediaStreamSource(stream);
+            let processor = context.createScriptProcessor(2048, 1, 1);
+            source.connect(analyser);
+            analyser.connect(processor);
+            processor.connect(context.destination);
+
+            processor.onaudioprocess = (event) => {
+              if (!isRecording)
+                return;  
+              //console.log('yay');
+              const array = new Uint8Array(analyser.frequencyBinCount);
+              analyser.getByteFrequencyData(array);
+              const volume = getAverageVolume(array);
+              output.style.opacity = volume / MAX_VOLUME;
+              //console.log(volume);
+            };    
+          });
+        }
+      }
+      
+      // Update the UI.
+      btnRecord.textContent = isRecording ? 'Start shouting' : 'Stop';
+      isRecording = !isRecording;
+    });
+    
+    function getAverageVolume(array) {
+      const length = array.length;
+      let values = 0;
+      for (let i = 0; i < length; i++) {
+        values += array[i];
+      }
+      return values / length;
+    }
+
+  </script>
+</html>

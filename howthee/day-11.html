@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>inktober experiment</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="style.css">
+    <script src="sheriff.js"></script>
+    <style>
+      .an-art {
+        text-align: center;
+      }
+      #wrapper { background: white; }
+      svg {
+        cursor: pointer;
+        -webkit-user-select: none; /* Safari 3.1+ */
+        -moz-user-select: none; /* Firefox 2+ */
+        -ms-user-select: none; /* IE 10+ */
+        user-select: none; /* Standard syntax */
+      }
+      circle {
+         opacity: 1;
+         -webkit-transition: opacity 200ms linear;
+         transition: opacity 200ms linear;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>#inktober: an experiment</h1>
+    <div class="an-art" title="I'm starting with the 'I'm the sheriff of circle-punch', and adding a feature every day. To see the previous days, look at the Glitch code or go to howthee.glitch.me/day-x.html. Thanks to Markus Schatschneider for the svg filter.">
+      <div id="wrapper" class="inset">
+        <!-- Thanks to https://codepen.io/tech-punkt/pen/gwzwXP for this! -->
+        <svg id="svg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="100%">
+            <g filter="url(#blurry)" id="blurText"></g>
+            <filter id="blurry"><feGaussianBlur stdDeviation="7" /></filter>
+            <mask id="spotlight"></mask>
+            <g mask="url(#spotlight)" id="clearText"></g>
+         </svg>
+      </div>
+    </div>
+    
+    <div class="an-art-label">
+      <button class="action" onclick="window.location = `https://howthee.glitch.me/day-${today-1}.html`">🔙</button>
+      <div>
+        <b>Day 11</b>: Defrost.
+      </div>
+      <button class="action" onclick="window.location = `https://howthee.glitch.me/day-${today+1}.html`">🔜</button>
+    </div>
+
+    <footer>
+      <hr>
+      <h3>a weird art experiment by <a href="https://twitter.com/notwaldorf">monica</a></h3>
+    </footer>
+    <div class="glitchButton" style="position:fixed;top:20px;right:20px;"></div>
+    <script src="https://button.glitch.me/button.js"></script>
+  </body>
+  <script>
+    const today = 11;
+    
+    const SIZE = 40;
+    const FONT_SIZE = 32;
+    const svgNS = "http://www.w3.org/2000/svg";
+    
+    const blob = getSheriffAsText('❄️');
+    for (let y = 0; y < blob.length; y++) {
+      for (let x = 0; x < blob.length; x++) {
+        const content = document.createElementNS(svgNS, 'text');
+        content.setAttribute('x', x * SIZE);
+        content.setAttribute('y', SIZE + y * SIZE);
+        content.setAttribute('font-size', FONT_SIZE);
+        content.textContent = blob[y][x];
+        blurText.appendChild(content.cloneNode(true));
+        clearText.appendChild(content.cloneNode(true));
+      }
+    }
+    svg.setAttribute('height', 8 * SIZE);
+    svg.setAttribute('width', 7 * SIZE);
+    
+    wrapper.addEventListener('click', doTheThing);
+    wrapper.addEventListener('mouseover', doTheThing);
+    
+    function doTheThing(event) {
+      event.preventDefault();
+      const x = event.pageX - wrapper.offsetLeft;
+      const y = event.pageY - wrapper.offsetTop;
+      
+      var circle = document.createElementNS(svgNS, 'circle');
+      circle.setAttribute('cx', x);
+      circle.setAttribute('cy', y);
+
+      circle.setAttribute('r', '30');
+      circle.setAttribute('fill', 'white');
+      circle.setAttribute('filter', 'url(#blurry)');
+      spotlight.appendChild(circle);
+    }
+  </script>
+</html>

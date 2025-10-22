@@ -1,0 +1,30 @@
+{
+  "name": "emoji-translate",
+  "version": "0.0.1",
+  "description": "Translates english to emoji",
+  "main": "server.js",
+  "scripts": {
+    "start": "webpack && node server.js"
+  },
+  "dependencies": {
+    "express": "^4.15.4",
+    "moji-translate": "^1.0.8"
+  },
+  "devDependencies": {
+    "webpack": "^2.6.1"
+  },
+  "engines": {
+    "node": "8.x"
+  },
+  "repository": {
+    "url": "https://glitch.com/edit/#!/emoji-translate"
+  },
+  "license": "MIT",
+  "keywords": [
+    "node",
+    "glitch",
+    "express",
+    "emoji",
+    "webpack"
+  ]
+}

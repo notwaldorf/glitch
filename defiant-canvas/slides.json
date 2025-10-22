@@ -1,0 +1,76 @@
+[
+  {
+    "pretitle": "I gave a talk at xoxo. These were my slides. They are silly, because that was the point. Wait a couple of seconds for everything to load, then press <b>1</b> to see the first slide, and then the ◀️ and ▶️ arrows to advance. <b>Esc</b> closes the open slide, <b>2</b> reopens it. <br>The readme has more info."
+  },
+  {
+    "title": "@notwaldorf",
+    "img": "https://cdn.glitch.com/f7f2bc44-a821-4c39-81a2-8f39f455c63d%2F0.png?1536205099061"
+  },
+  {
+    "title": "i build silly things"
+  },
+  {
+    "title": "so that <i>you</i> can make silly things"
+  },
+  {
+    "pretitle": "(to me)",
+    "title": "generative art <br> = ",
+    "subtitle": "you + code + random delight"
+  },
+  {
+    "title": "emojillate",
+    "iframe": "https://meowni.ca/emojillate/"
+  },
+  {
+    "title": "emoji-garden on glitch",
+    "iframe": "https://glitch.com/embed/#!/embed/emoji-garden?path=README.md&previewSize=100"
+  },
+  {
+    "subtitle": "sometimes <i>the tools</i> we use make the art \"generative\",<br>not the art itself"
+  },
+  {
+    "title": "hedgehog-garden on glitch",
+    "iframe": "https://glitch.com/embed/#!/embed/hedgehog-garden?path=README.md&previewSize=100"
+  },
+  {
+    "title": "emoji-desert on glitch",
+    "iframe": "https://glitch.com/embed/#!/embed/emoji-desert.glitch.me/?path=README.md&previewSize=100"
+  },
+  {
+    "title": "emoji-sky on glitch",
+    "iframe": "https://glitch.com/embed/#!/embed/emoji-sky.glitch.me/?path=README.md&previewSize=100"
+  },
+  {
+    "title": "emoji-voidscapes on glitch",
+    "iframe": "https://glitch.com/embed/#!/embed/emoji-voidscapes?path=README.md&previewSize=100"
+  },
+  {
+    "title": "the code we rely on are important for creativity"
+  },
+  {
+    "img": "https://magenta.tensorflow.org/assets/magenta-logo-bottom-text.png"
+  },
+  {
+    "title": "tenori-off on glitch",
+    "iframe": "https://glitch.com/embed/#!/embed/tenori-off?path=README.md&previewSize=100"
+  },
+  {
+    "iframe": "https://experiments.withgoogle.com/ai/beat-blender/view/"
+  },
+  {
+    "fit": true,
+    "bigImage": true,
+    "img": "https://cdn.glitch.com/f7f2bc44-a821-4c39-81a2-8f39f455c63d%2FUntitled.2018-09-06%2021_43_24.gif?1536295455359"
+  },
+  {
+    "iframe": "https://magenta.tensorflow.org/assets/sketch_rnn_demo/index.html"
+  },
+  {
+    "subtitle": "we should build more <br><i>serious</i> things<br>so that you can <br>build better <i>silly</i> things"
+  },
+  {
+    "xoxo": true,
+    "title": "xoxo,",
+    "subtitle": "<s>gossip girl</s><br>@notwaldorf"
+  }
+]

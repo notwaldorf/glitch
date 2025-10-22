@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Hearing Vera Molnár</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://fonts.googleapis.com/css?family=IBM+Plex+Mono:400,700" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@magenta/music@1.1.5"></script>
+    <script src="/script.js" defer></script>
+    <style>
+      * { box-sizing: border-box; }
+      body { 
+        margin: 0;
+        padding: 0;
+        max-height: 100vh;
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: 'IBM Plex Mono', monospace;
+      }
+      [hidden] {
+        display: none !important;
+      }
+      [disabled] {
+        opacity: 0.3;
+        pointer-events: none;
+      }
+      .hello {
+        width: 600px;
+        max-width: 100%;
+        line-height: 1.5;
+        padding: 20px;
+      }
+      .footer {
+        margin-top: 60px;
+        font-size: 14px;
+      }
+      h1 {
+        position: relative;
+        margin-bottom: 30px;
+      }
+      h1:after {
+        content: '';
+        position: absolute;
+        left: 0;
+        bottom: -20px;
+        width: 100px;
+        height: 10px;
+        background: black;
+      }
+      a:link, a:visited {
+        color: black;
+        font-weight: bold;
+      }
+      .hello button {
+        color: black;
+        background: white;
+        border: 2px solid black;
+        font-family: inherit;
+        font-size: 20px;
+        font-weight: bold;
+        padding: 4px 8px;
+        box-shadow: none;
+        width: 140px;
+        margin: 0 auto;
+        cursor: pointer;
+        transition: 0.2s all;
+      }
+      .hello button:hover {
+        color: white;
+        background: black;
+      }
+      
+      #stupidAutoplay {
+        font-weight: bold;
+        position: absolute;
+        top: 100px;
+        left: 100px;
+      }
+    </style>
+  </head>  
+  <body>
+    <div class="hello" id="hello">
+      <h1>Hearing Vera Molnár</h1>
+      
+      <p>
+        Vera Molnár is one of the earliest pioneers of digital art. In 
+        <a href="https://www.artsy.net/artwork/vera-molnar-un-deux-trois-b">Un Deux Trois</a>, she draws 
+        3 kinds of lines, each in its own third of the canvas. </p>
+      
+      <p>In this demo, you will hear a musical trio 
+        generated with <a href="http://magenta.tensorflow.org">Magenta.js</a>. Each of the 3 instruments
+        represents one of the 3 types of lines. As the music progresses, the painting comes to life.
+      </p>
+      
+      <button id="btnGo" disabled onclick="go()">Loading...</button>
+      
+      <p class="footer">Made by <a href="https://twitter.com/notwaldorf">Monica</a>. <br>Thanks to <a href="https://twitter.com/twholman">Tim Holman</a>
+        for the <a href="https://generativeartistry.com/tutorials/un-deux-trois/">GenerativeArtistry</a> code.</p>
+    </div>
+    <canvas hidden></canvas>
+  </body>
+</html>

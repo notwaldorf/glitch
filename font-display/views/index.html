@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Font-display playground</title>
+    <meta name="description" content="A cool thing made with Glitch">
+    <link id="favicon" rel="icon" href="https://glitch.com/edit/favicon-app.ico" type="image/x-icon">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <style>
+      body {
+        box-sizing: border-box;
+        width: 100%;
+        max-width: 600px;
+        padding: 24px;
+        margin: 0 auto;
+        font-family: helvetica, arial, sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+      h1, h2 {
+        border-left: 8px solid #E91E63;
+        padding-left: 8px;
+        margin: 48px 0 24px 0;
+      }
+      a:link, a:visited {
+        color: #E91E63;
+      }
+      p {
+        line-height: 1.5;
+        letter-spacing: 0.2px;
+      }
+      hr {
+        height: 8px;
+        width: 200px;
+        background: #7BE4D5;
+        display: block;
+        margin: 48px auto;
+        border: none;
+        border-radius: 3px;
+      }
+      [hidden] {
+        display: none !important;
+      }
+      img.diagram {
+        display: block;
+        max-width: 400px;
+        width: 100%;
+        margin: 20px auto;
+      }
+      
+      code, pre {
+        font-weight: bold;
+        background: #b0efe6;
+        padding: 4px;
+        font-size: 16px;
+        border-radius: 3px;
+        line-height: 1.5;
+        word-break: break-all;
+        white-space: pre-wrap;
+      }
+      button.start-demo {
+        background: #7BE4D5;
+        padding: 4px 10px;
+        border: none;
+        font-size: 16px;
+        text-transform: uppercase;
+        font-weight: bold;
+        text-align: center;
+        cursor: pointer;
+      }
+      .horizontal {
+        display: flex;
+        justify-content: space-between; 
+        height: 40px;
+      }
+      .demo {
+        position: relative;
+        border: 2px solid #7BE4D5;
+        padding: 10px;
+        height: 300px;
+      }
+      .time {
+        font-size: 26px;
+        position: absolute;
+        top 0;
+        right: 0;
+      }
+      .time #msBox {
+        display: inline-block;
+        font-weight: bold;
+      }
+      .demo span {
+        display: inline-block;
+        font-size: 1.5em;
+        font-weight: bold; 
+        height: 30px;
+        width: 110px;
+        text-align: center;
+      }
+      @font-face {
+        font-family: 'demo-none';
+        src: url(font.woff2?) format('woff2');
+      }
+      @font-face {
+        font-family: 'demo-auto';
+        font-display: auto;
+        src: url(font.woff2?) format('woff2');
+      }
+      @font-face {
+        font-family: 'demo-block';
+        font-display: block;
+        src: url(font.woff2?) format('woff2');
+      }
+      @font-face {
+        font-family: 'demo-swap';
+        font-display: swap;
+        src: url(font.woff2?) format('woff2');
+      }
+      @font-face {
+        font-family: 'demo-optional';
+        font-display: optional;
+        src: url(font.woff2?) format('woff2');
+      }
+      @font-face {
+        font-family: 'demo-fallback';
+        font-display: fallback;
+        src: url(font.woff2?) format('woff2');
+      }
+      @font-face {
+        font-family: 'demo2-none';
+        src: url(font2.woff2?) format('woff2');
+      }
+      @font-face {
+        font-family: 'demo2-auto';
+        font-display: auto;
+        src: url(font2.woff2?) format('woff2');
+      }
+      @font-face {
+        font-family: 'demo2-block';
+        font-display: block;
+        src: url(font2.woff2?) format('woff2');
+      }
+      @font-face {
+        font-family: 'demo2-swap';
+        font-display: swap;
+        src: url(font2.woff2?) format('woff2');
+      }
+      @font-face {
+        font-family: 'demo2-optional';
+        font-display: optional;
+        src: url(font2.woff2?) format('woff2');
+      }
+      @font-face {
+        font-family: 'demo2-fallback';
+        font-display: fallback;
+        src: url(font2.woff2?) format('woff2');
+      }
+
+      @font-face {
+        font-family: 'demo3-none';
+        src: url(font3.woff2?) format('woff2');
+      }
+      @font-face {
+        font-family: 'demo3-auto';
+        font-display: auto;
+        src: url(font3.woff2?) format('woff2');
+      }
+      @font-face {
+        font-family: 'demo3-block';
+        font-display: block;
+        src: url(font3.woff2?) format('woff2');
+      }
+      @font-face {
+        font-family: 'demo3-swap';
+        font-display: swap;
+        src: url(font3.woff2?) format('woff2');
+      }
+      @font-face {
+        font-family: 'demo3-optional';
+        font-display: optional;
+        src: url(font3.woff2?) format('woff2');
+      }
+      @font-face {
+        font-family: 'demo3-fallback';
+        font-display: fallback;
+        src: url(font3.woff2?) format('woff2');
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>
+        Font-display
+      </h1>
+    </header>
+    <p>
+      This is a small explainer that I built for <a href="https://vimeo.com/241111413">a talk</a> on web fonts and performance.
+    </p>
+    <p>
+      Before we talk about what <code>font-display</code> is, let's talk about the lifetime of a web font. For a super
+      detailed explanation of where web fonts fit in the browser rendering process, Ilya Grigorik has an 
+      <a href="https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/webfont-optimization#webfonts_and_the_critical_rendering_path">amazing blog post</a>
+      on web font optimization. But, if we're just trying to understand the basics, there are basically three
+    parts to it:
+      <img class="diagram" src="https://cdn.glitch.com/be746fa6-6ce9-423d-b9a3-684949adc8d5%2FScreen%20Shot%202017-09-13%20at%201.39.35%20PM.png?1505335214999"></p>
+    
+    <p>
+      During the <b>block</b> period, the browser renders your text in an invisible font. This is why on a lot of webfont-heavy websites, 
+      during the first load of the page you will see no text or worse, phantom underlines.
+    </p>
+    
+    <p>
+      During the <b>swap</b> period, the browser renders your text in the fallback font (in the example in the diagram, that would be 
+      the default `serif` font.
+    </p>
+    
+    <p>
+      The <b>failure</b> period means no font has been found, in which case the browser renders your text in the fallback font, as above.
+    </p>
+    
+    <hr>
+    
+    <p>With the new <code>font-display</code> attribute, you can control the length of each of these periods, and what happens when one of them fails. 
+      There are 4 different values: 
+      <code>block</code>, <code>swap</code>, <code>fallback</code> and <code>optional</code>. There's also <code>auto</code>, 
+      which usually ends up being the same as <code>block</code>. These values
+    are supported on all modern browsers (IE not included), but double
+    check the <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display#Browser_compatibility">compatibility
+      table</a> for the latest!</p>
+    
+    <p>
+      The font display is controlled per font-face:
+      <pre>
+  <code>
+  @font-face {
+      font-family: 'my-font';
+      font-display: optional;
+      src: url(my-font.woff2) format('woff2');
+  }</code>
+      </pre>
+    </p>
+  
+    <p>
+      <br>
+    <b>🎉 Update</b> (May 14, 2019): Google Fonts now lets you control 
+      font loading using the <code>display</code> query parameter:
+      
+      <pre>
+  <code>
+  &lt;link href="https://fonts.googleapis.com/css?family=Roboto&display=optional" rel="stylesheet"&gt;</code>
+      </pre>
+    </p>
+      
+    <h2>font-display: block</h2>
+    <p>
+      The text blocks (is invisible) for a short period*. Then, if the custom font hasn't been downloaded yet, the browser
+      swaps (renders the text in the fallback font), for however long it takes the custom font to be downloaded, and then
+      re-renders the text in the custom font.
+      You get a <b>FOIT</b> (flash of invisible text).
+      <p>
+        *The length of the block period <a href="https://tabatkins.github.io/specs/css-font-display/#intro">depends</a> on which browser you're using. 
+        Chrome, Firefox and (<a href="https://webkit.org/blog/6643/improved-font-loading/">recently</a>) Safari use 3s. IE uses 0s (effectively having
+        no block period), and older Safari used no timeout, effectively having an inifinite block period.
+      </p>
+    </p>
+    
+    <h2>font-display: swap</h2>
+    <p>
+      There is no block period (so no invisible text), and the text is shown immediately in the fallback font until the custom font loads, 
+      then it's swapped with the custom font. You get a <b>FOUT</b> (flash of unstyled text).
+    </p>
+    
+    <h2>font-display: fallback</h2>
+    <p>
+      This is somewhere in between block and swap. The text is invisible for a short period of time (100ms). Then if the custom font hasn't downloaded,
+      the text is shown in a fallback font (for about 3s), then swapped after the custom font loads.
+    </p>
+    
+    <h2>font-display: optional</h2>
+    <p>
+      This behaves just like fallback, only the browser can decide to not use the custom font at all, based on 
+      the user's connection speed (if you're on a slow 3G or less, it will take forever to download 
+      the custom font and then swapping to it will be too late and extremely annoying)
+    </p>
+    
+    <p>
+      Side-by-side, that looks like this:
+      <img class="diagram" src="https://cdn.glitch.com/be746fa6-6ce9-423d-b9a3-684949adc8d5%2FScreen%20Shot%202017-11-14%20at%202.49.37%20PM.png?1510699808180">
+</p>
+    <h2 id="the-demo">
+      Demo
+    </h2>
+    <p>
+      This demo simulates a slow connection speed. The font resource is returned after a 4s delay (so after the 
+      block period would normally end), so that 
+      you can see what happens for each of the options. </p>
+  
+    <button class="start-demo" onclick="start(event)">Run demo</button>
+    <div class="demo" id="demo">
+      <div class="time"><div id="msBox">0.0</div> s</div>
+      <p>
+        <b>Very slow</b> font (4s server delay)
+      </p>
+      <div class="horizontal">
+        <span hidden>none</span>
+        <span hidden>block</span>
+        <span hidden>swap</span>
+        <span hidden>fallback</span>
+        <span hidden>optional</span>
+      </div>
+      <p>
+        <b>Medium slow</b> font (2s server delay)
+      </p>
+      <div class="horizontal">
+        <span hidden>none</span>
+        <span hidden>block</span>
+        <span hidden>swap</span>
+        <span hidden>fallback</span>
+        <span hidden>optional</span>
+      </div>
+      <p>
+        <b>Fast</b> font (0s server delay)
+      </p>
+      <div class="horizontal">
+        <span hidden>none</span>
+        <span hidden>block</span>
+        <span hidden>swap</span>
+        <span hidden>fallback</span>
+        <span hidden>optional</span>
+      </div>
+    </div>
+    
+    <h2>
+      So, what should I do?
+    </h2>
+    <p>
+      This depends a lot on <i>how</i> you are using your webfont, and whether rendering the text in
+      a fallback font makes sense. For example, if you're rendering the main body text on a site, you
+      should use <code>font-display:optional</code>. On browsers that implement it (all 
+      modern browsers at the time of updating this article in 2019)
+      the experience will be much nicer: your users will get fast content, and if the web font download
+      takes too long, they won't get a page relayout halfway through reading your article.
+    </p>
+    <p>
+      If you're using a web font for icons, there is no acceptable fallback font you can render these
+      icons in (unless you're using emoji or something), so your only option is to completely block 
+      until the font is ready, with <code>font-display:block</code>.
+    </p>
+    <hr>
+    <br><br>
+<p style="text-align: center">Happy fonting! ❤️, <a href="https://twitter.com/notwaldorf">monica</a></p>
+  </body>
+  
+  <script>
+    var ms;
+    var interval; 
+    
+    function start(event) {
+      var button = event.target;
+      var div = document.getElementById('demo');
+      var spans = div.querySelectorAll('span');
+      var styleElem = document.querySelector('style');
+      
+      ms = 0;
+      interval = setInterval(function(){ count() }, 100);
+      
+      const families = ['none', 'block', 'swap', 'fallback', 'optional'];
+      
+      cacheBustFontFaceRules(styleElem);
+      
+      for (var i = 0; i < spans.length; i++) {
+        spans[i].hidden = false;
+        if (i <= 4) {
+          spans[i].style.fontFamily = 'demo-' + families[i%5];
+        } else if (i <= 9) {
+          spans[i].style.fontFamily = 'demo2-' + families[i%5];
+        } else {
+          spans[i].style.fontFamily = 'demo3-' + families[i%5];
+        }
+      } 
+    }
+    
+    // Thanks Paul Irish!
+    // Note: this is busted on Chrome 65 but fixed on Chrome 66:
+    // function cacheBustFontFaceRules(styleElem) {
+    //   Array.from(styleElem.sheet.cssRules).filter(r => r instanceof CSSFontFaceRule).forEach(r => {
+    //     const randomInteger = Math.floor(Math.random() * 10);
+    //     r.style.src = r.style.src.replace(`") format`, `${randomInteger}") format`);
+    //   });
+    // }
+    function cacheBustFontFaceRules(styleElem) {
+      styleElem.innerHTML = styleElem.innerHTML.replace(/\.woff2\?/g, `.woff2?${Math.floor(Math.random() * 10)}`);
+    }
+    
+    function count() {
+     ms++;
+     if (ms === 60) {
+       clearInterval(interval);
+     }
+     msBox.textContent = ms / 10 ;
+     if (ms%10 === 0) {
+       msBox.textContent += '.0'
+     } 
+   }
+  </script>
+  
+  <div class="glitchButton" style="position:fixed;top:20px;right:20px;"></div>
+  <script src="https://button.glitch.me/button.js"></script>
+</html>

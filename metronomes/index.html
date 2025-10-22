@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Metronome experiments</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <link href="style.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Mono:400,700&display=swap" rel="stylesheet">
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="/script.js" type="module"></script>
+  </head>  
+  <body>
+    <h1>Testing different metronomes</h1>
+    <div>a demo by <a href="https://twitter.com/notwaldorf">monica</a>. <a href="https://meowni.ca/posts/metronomes/">Read</a> the blog post.</div>
+    
+    <section>
+      <p>We all know that <b>setInterval</b> is not super accurate, but I wanted
+        to see how this would actually affect in practice audio scheduling (like a metronome).
+        I made three kinds of metronomes, in order of goodness. I'm using emoji everywhere so that
+        if you don't want to read the text, you can still know how you're supposed to feel.
+      </p>
+    </section>
+    
+    <section>
+      <p>I implemented 3 kinds of metronomes:</p>
+      <table class="demo1">
+        <tr>
+          <td></td>
+          <td></td>
+          <td><label> <b>Tempo (bpm)</b><input id="tempoInput1" value="120" type="number"></label></td>
+        </tr>
+        <tr>
+          <td class="emoji">😱</td>
+          <td>using setInterval()</td>
+          <td><button id="btnPlain">start</button></td>
+        </tr>  
+        <tr>
+          <td class="emoji">😕</td>
+          <td>using setInterval() in a worker</td>
+          <td><button id="btnWorker">start</button></td>
+        </tr>  
+        <tr>
+          <td class="emoji">🥳</td>
+          <td>using 20 prescheduled audio events</td>
+          <td><button id="btnPrescheduled">start</button></td>
+        </tr>
+      </table>
+      
+      <button id="btnStop1" class="accent">stop</button>
+      <div id="message1">Press start</div>
+    </section>
+    
+    <section>
+      <p>For the below experiments, run all metronomes in
+          a row for <label><input id="clicksInput" value="20" type="number"> clicks
+            </label> each and...
+      </p>
+      
+      <table class="demo2">
+        <tr>
+          <td></td>
+          <td></td>
+          <td><label> <b>Tempo (bpm)</b><input id="tempoInput2" value="120" type="number"></label></td>
+        </tr>
+        
+        <tr>
+          <td class="emoji">🤔</td>
+          <td>do nothing in the callback. <b>what to look for: </b> all metronomes are pretty much the same. this is 
+          the unrealistic best case scenario: if you have a metronome in JS and are doing no other work: bless you.</td>
+          <td><button id="btnRunExperiment1">start</button></td>
+        </tr> 
+        <tr>
+          <td class="emoji">🤢</td>
+          <td>fake a blocking computation for 0.5s in the callback on the main thread. <b>what to look for: </b>audio and display
+            message are both at a horribly incorrect tempo for the first 2 metronomes (because they're being blocked by the fake work).
+            For the 3rd metronome the audio is correct (because it's not scheduled by the main browser thread), but the UI
+            is janky for the same reason as the first 2 metronomes.</td>
+          <td><button id="btnRunExperiment2">start</button></td>
+        </tr> 
+        <tr>
+          <td class="emoji">😰</td>
+          <td>fake a blocking computation for 0.5s but chunked (split into 5ms chunks, each in its own rAF). <b>what to look for: </b>
+          this is in between the two experiments: we're still doing a bit of blocking work (but significantly less than in the second example).
+          The important thing to note here is that even though the blocking work seems small (what's 5ms here and there), it actually
+            throws off the first metronome audio quite a bit.</td>
+          <td><button id="btnRunExperiment3">start</button></td>
+        </tr> 
+        <tr>
+          <td class="emoji">🤩</td>
+          <td>fake a blocking computation for 0.5s in a worker. <b>what to look for: </b>this is the realistic best case scenario. we're doing
+          all the blocking work in a worker, which is off the main thread, so even the terrible setInterval() metronome is 
+          doing fine.</td>
+          <td><button id="btnRunExperiment4">start</button></td>
+        </tr> 
+      </table>
+    </section>
+    
+    <button id="btnStop2" class="accent">stop</button>
+    <div id="message2">Press start</div>
+    
+    <br><br>
+    <p id="graphTitle" hidden>Graph of the AudioContext <b>currentTime</b> property for each metronome 
+      (which is when you actually hear the tick). In the setInterval() metronomes,
+      the time of the audio and the time of the callback (in which you'd do UI work) is the same. In the WebAudio scheduler 
+      metronome, the time of the audio is always correct, but the callback is in a rAF so it will be imprecise,
+      which is why we log it separately: </p>
+    <div id="graph"></div>
+
+    <div class="glitchButton" style="position:fixed;top:20px;right:20px;"></div>
+    <script src="https://button.glitch.me/button.js"></script>
+  </body>
+</html>

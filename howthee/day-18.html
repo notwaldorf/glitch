@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>inktober experiment</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="style.css">
+    <script src="sheriff.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@magenta/music@1.1.5"></script>
+    <style>
+    </style>
+  </head>
+  <body>
+    <h1>#inktober: an experiment</h1>
+    <div id="wrapper" class="an-art" title="I'm starting with the 'I'm the sheriff of circle-punch', and adding a feature every day. To see the previous days, look at the Glitch code or go to howthee.glitch.me/day-x.html.">
+      <pre id="output"></pre>
+    </div>
+    <div class="an-art-label">
+      <button class="action" onclick="window.location = `https://howthee.glitch.me/day-${today-1}.html`">🔙</button>
+      <div>
+        <b>Day 18</b>: Frankensheriff<br>
+      </div>
+      <button class="action" onclick="window.location = `https://howthee.glitch.me/day-${today+1}.html`">🔜</button>
+    </div>
+    <div class="an-art-help">
+      <div style="text-align:center">
+        <button onclick="playOrPause()">Listen</button>
+        <button id="btn" onclick="aNewSheriffAppears()" disabled>Frankencode</button>
+      </div>
+      <hr>
+      This one's a weird one. It also uses a Magenta music model called <a href="https://magenta.tensorflow.org/music-vae">Music VAE</a>.
+      One of the things this model can do is encode note sequences in a lower dimension space, and then decode 
+      points from that space into a new note sequence. Normally, if you encode a note sequence and then decode that
+      encoding, you get the original one. Here, I am encoding the drum beat that represents the sheriff (see day 16 for how that works), adding
+      a little bit of noise, and then decoding the noisy encoding. What you get is...this.
+    </div>
+
+    <footer>
+      <hr>
+      <h3>a weird art experiment by <a href="https://twitter.com/notwaldorf">monica</a></h3>
+    </footer>
+    <div class="glitchButton" style="position:fixed;top:20px;right:20px;"></div>
+    <script src="https://button.glitch.me/button.js"></script>
+  </body>
+  <script>
+    const today = 18;
+    output.innerHTML = getSheriff('🥁');
+    
+    // Initialize the music stuff.
+    const mvae = new mm.MusicVAE('https://storage.googleapis.com/magentadata/js/checkpoints/music_vae/drums_2bar_hikl_small');
+    mvae.initialize().then(() => {
+      btn.disabled = false;
+    });
+    
+    let seq = sheriffToSequence();
+    const player = new mm.SoundFontPlayer('https://storage.googleapis.com/magentadata/js/soundfonts/sgm_plus');
+    player.loadSamples(seq);
+    
+    async function aNewSheriffAppears() {
+      const encoding = await mvae.encode([seq]);
+      
+      // randomize the encoding a bit so that we don't get a perfect decoding.
+      const noise = mm.tf.randomNormal([1,256], undefined , 0.2);
+      const encoding_ = encoding.add(noise);
+      const decoding = await mvae.decode(encoding_);
+      
+      seq = decoding[0];
+      player.loadSamples(seq);
+      output.innerHTML = sequenceToSheriff(seq);
+      
+      playOrPause();
+    }
+    
+    function sequenceToSheriff(seq) {
+      // This will obviously not work for giant sequences but
+      // I only have half an hour to do this so leave me alone.
+      let newSheriff = '';
+      let numSteps = seq.notes[seq.notes.length-1].quantizedStartStep;
+      let isFirstHand;
+      for (let i = 0; i < drumPitches.length; i++) {
+        const notes = getNotesForPitch(seq, drumPitches[i]);
+        isFirstHand = true;
+        let emoji;
+        if (i === 0) {
+          emoji = '🤠'
+        } else if (i === 6) {
+          emoji = '👢'
+        } else {
+          emoji = '🥁';
+        }
+        
+        for (let j = 0; j < numSteps; j++) {
+          // Is there a note for this step?
+          if (isThereANoteForStep(notes, j)) {
+            if (i === 3 && isFirstHand) {
+              newSheriff += '<div class="pixel body" id="sup"><span>👌</span></div>';
+              isFirstHand = false;
+            } else {
+              newSheriff += `<div class="pixel body"><span>${emoji}</span></div>`;
+            }
+          } else {
+            newSheriff += '<div class="pixel space"><span>&nbsp;</span></div>';
+          }
+        }
+        newSheriff += '\n';
+      }
+      return newSheriff;
+    }
+    
+    function getNotesForPitch(seq, pitch) {
+      const notes = [];
+      for (let i = 0; i < seq.notes.length; i++) {
+        if (seq.notes[i].pitch === pitch) {
+          notes.push(seq.notes[i]);
+        }
+      }
+      return notes;
+    }
+    
+    function isThereANoteForStep(notes, j) {
+      for (let i = 0; i < notes.length; i++) {
+        if (notes[i].quantizedStartStep === j) {
+          return true;
+        }
+      }
+      return false;
+    }
+    
+    function playOrPause() {
+      if (player.isPlaying()) {
+        player.stop();
+      } else {
+        mm.Player.tone.context.resume()
+        player.start(seq);
+      }
+    }
+  </script>
+</html>

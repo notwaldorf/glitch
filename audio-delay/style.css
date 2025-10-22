@@ -1,0 +1,194 @@
+* {box-sizing:border-box}
+[disabled] {pointer-events:none;opacity:0.3}
+body {
+  font-family: 'Roboto Mono', monospace; 
+  font-size: 15px;
+  padding: 2em;
+  max-width: 800px;
+  line-height: 1.5;
+  color: #444;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+p {
+  margin: 24px 0;
+}
+
+label {
+  font-size: 40px;
+}
+input {
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+  border: none;
+  border-bottom: 4px solid #444;
+  font-weight: bold;
+  width: 180px;
+  font-size: inherit;
+  margin-bottom: 24px;
+}
+#text {
+  width: 100%;
+}
+.wrapper {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 300px;
+  flex: 1;
+}
+textarea, #output {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+}
+#output {
+  border: 1px solid #444;
+  word-wrap: break-word;
+  white-space: pre-wrap; 
+  overflow: auto;
+}
+textarea {
+  background: transparent;
+  color: transparent;
+  caret-color: black !important;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  border: none;
+}
+
+.btn {
+  border: 2px solid #444;
+  background: white;
+  font-family: sans-serif;
+  font-size: 12px;
+  text-transform: uppercase;
+  cursor: pointer;
+  height: 40px;
+  min-width: 100px;
+  vertical-align: middle;
+  margin-top: 8px;
+}
+
+.btn:hover {
+  background: aquamarine;
+}
+
+a:link, a:visited {
+  color: inherit;
+  background: #7fffd46e;
+}
+a:hover {
+  background: aquamarine;
+}
+
+footer {
+  margin-top: 24px;
+}
+
+
+/* Piano */
+.keyboard {
+  position: relative;
+  display: inline-block;
+  --width: 360px;
+  width: var(--width);
+  height: 140px;
+  pointer-events: none;
+}
+
+/* Based on https://codepen.io/clkent/pen/dQwGqj which is brilliant */
+.white-keys {
+  position: absolute;
+  top:0;
+  left:0;
+  width: var(--width);
+  height: 100%;
+  display: grid;
+  grid-template-columns: repeat(12, 30px);
+  grid-column-gap: 2px;
+  justify-items: center;
+}
+.black-keys {
+  position: absolute;
+  top:0;
+  left:0;
+  width: var(--width);
+  height: 70%;
+  display: grid;
+  grid-template-columns: repeat(36, 10px);
+  justify-items: center;
+}
+
+.keyboard button {
+  height: 100%;
+  width: 100%;
+  position: relative;
+  cursor: pointer;
+  transition: background 0.2s linear;
+  font-family: inherit;
+  pointer-events: all;
+}
+.keyboard button:hover, .keyboard button.down {
+  background: aquamarine !important;
+  color: black !important;
+  top: 4px;
+}
+.keyboard button > span {
+  position: absolute;
+  bottom: 8px;
+  left: 0;
+  width: 100%;
+  text-align: center;
+  pointer-events: none;
+}
+.keyboard > .white-keys > button {
+  background: white;
+  color: #444;
+  border: 1px solid #444;
+}
+
+.keyboard > .black-keys > button {
+  background: #444;
+  color: white;
+  border: none;
+}
+
+.black-keys button.c {
+  grid-column: 3 / span 2;
+}
+.black-keys button.d {
+  grid-column: 6 / span 2;
+}
+.black-keys button.f {
+  grid-column: 13 / span 2;
+}
+.black-keys button.g {
+  grid-column: 16 / span 2;
+}
+.black-keys button.a {
+  grid-column: 19 / span 2;
+}
+.black-keys button.c2 {
+  grid-column: 25 / span 2;
+}
+.black-keys button.d2 {
+  grid-column: 28 / span 2;
+}
+.black-keys button.f2 {
+  grid-column: 34 / span 2;
+}
+
+@media screen and (max-width: 500px) {
+  .keyboard {
+    --width: 300px;
+  }
+}

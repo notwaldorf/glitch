@@ -1,0 +1,474 @@
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+  <title>Float positioning algorithm</title>
+    
+  <style>
+  * {
+    box-sizing: border-box;
+  }
+  body {
+    margin: 20px;
+    max-width: 800px;
+    font-family: Helvetica, sans-serif;
+    line-height: 1.5;
+  }
+  .wrapper {
+    display: flex; flex-direction: row;
+  }
+  button.control {
+    background: transparent;
+    border: none;
+  }
+  code {
+    padding: 3px 5px;
+    margin: 0 2px;
+    white-space: nowrap;
+    background-color: #f8f8f8;
+    color: #E91E63;
+    border-radius: 3px;
+    font-size: 16px;
+  }
+  #container {
+    width: 400px;
+    height: 500px;
+    xborder: 1px solid black;
+    position: relative;
+    background: white;
+    margin-right: 20px;
+    flex-shrink: 0;
+    box-shadow: rgba(0, 0, 0, 0.14) 0px 4px 5px 0px, rgba(0, 0, 0, 0.12) 0px 1px 10px 0px, rgba(0, 0, 0, 0.4) 0px 2px 4px -1px;
+    background-image: linear-gradient(90deg, transparent 0%, transparent calc(100% - 1px), gainsboro), linear-gradient(0deg, transparent 0%, transparent calc(100% - 1px), gainsboro);
+    background-size: 50px 50px;
+  }
+  #container > div.opp {
+    background: rgba(0, 0, 200, 0.1);
+  }
+  #container > div.opp:hover {
+    border: 3px solid rgba(0, 0, 200, 0.4);
+  }
+
+  [left], [right] {
+    width: 100px;
+    height: 100px;
+    line-height: 100px;
+    text-align: center;
+    border: 1px dotted black;
+  }
+
+  [left] {
+    background: hotpink !important;
+    float: left;
+  }
+  [right] {
+    background: darkturquoise !important;
+    float: right;
+  }
+  [clear-left], [clear-right] {
+    width: 50px;
+    height: 50px;
+    line-height: 50px;
+    text-align: center;
+  }
+  [clear-left], [clear-right] {
+    clear: left;
+    background: yellow !important;
+  }
+
+  [clear-right] {
+    clear: right;
+    background: palegreen !important;
+  }
+    
+  div.shelf {
+    outline: 2px dashed black;
+    position: absolute;
+    left: 0;
+  }
+  #output > b { color: #E91E63; }
+  .footer {
+    position: relative;
+    margin-top: 60px;
+    font-size: 14px;
+  }
+  .footer::after {
+    content: "";
+    position: absolute;
+    width: 40px;
+    height: 6px;
+    bottom: 30px;
+    left: 0;
+    border-bottom: 6px solid hotpink;
+  }
+</style>
+</head>
+<body>
+  <h1>How browsers position floats</h1>
+  <p>
+    When you have a <code>float</code> CSS property on a box (with a value different than <code>none</code>), this box
+    must be laid out according to the <b>float positioning algorithm</b>. Loosely, it says:
+    <ul>
+      <li>if the box has <code>float:left</code>, the box is positioned at the beginning of the line box</li>
+      <li>if the box has <code>float:right</code>, the box is positioned at the end of the line box</li>
+      <li>text (and more generally anything within the normal, non-floaty flow) is laid out along the edges of the floating boxes</li>
+      <li>the <code>clear</code> property changes the floating behaviour.</li>
+    </ul>
+  </p>
+  <p>Anyway, in general you'll have a better time if you use a flexbox or CSS grid instead of floats, because floats are quirky and have strange
+    edge cases, but if you were ever curious
+    about how the algorithm would choose where to position different floats, here's a demo:</p>
+  <button class="control" onclick="previous()" title="previous step">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="#000000" height="40" width="40" viewBox="0 0 24 24">
+      <path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/>
+      <path d="M0 0h24v24H0z" fill="none"/>
+    </svg>
+  </button>
+  <button class="control" onclick="next()" title="next step">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="#000000" height="40" width="40" viewBox="0 0 24 24">
+      <path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/>
+      <path d="M0 0h24v24H0z" fill="none"/>
+    </svg>
+  </button>
+  
+  <div class="wrapper">
+    <div id="container"></div>
+    <div style="clear:both"></div>
+    <div id="output"></div>
+  </div>
+  <div class="footer">
+    made by <a href="https://twitter.com/notwaldorf">monica</a>, with a lot of help from <a href="https://twitter.com/dassurma">surma</a>
+    and <a href="https://twitter.com/bfgeek">ian</a>, who actually understand layout for realsies.
+  </div>
+</body>
+
+<script>
+  let currentStep = 0;
+  next();
+
+  function next() {
+    container.innerHTML = '';
+    doStep(currentStep);
+    currentStep++;
+  }
+
+  function previous() {
+    container.innerHTML = '';
+    currentStep -= 2;
+    if (currentStep < 0) currentStep = 0;
+    doStep(currentStep);
+    currentStep++;
+  }
+
+  function doStep(step) {
+    for (let i = 0; i <= step; i++) {
+      draw(i);
+    }
+    showOpportunities(currentStep);
+    moveShelf(currentStep);
+    showHelp(currentStep);
+  }
+
+  function draw(step) {
+    switch(step) {
+      case 0:
+        floatLeft();
+        break;
+      case 1:
+        floatRight();
+        break;
+      case 2:
+        floatLeft(50, 100);
+        break;
+      case 3:
+        floatLeft(300, 100);
+        break;
+      case 4:
+        floatRight(150, 100);
+        break;
+      case 5:
+        floatLeft(50, 100);
+        break;
+      case 6:
+        floatRight(50, 100);
+        break;
+      case 7:
+        clearLeft();
+        break;
+      case 8:
+        floatLeft(50, 50);
+        floatRight(50, 50);
+        break;
+      case 9:
+        clearRight();
+        break;
+      case 10:
+        floatLeft(50, 50);
+        floatRight(50, 50);
+        break;
+      case 11:
+        floatLeft(100, 50);
+        break;
+    }
+  }
+
+  function floatLeft(width, height) {
+    const div = makeDiv(width, height);
+    div.setAttribute('left', true);
+    div.textContent = 'L';
+    return div;
+  }
+
+  function floatRight(width, height) {
+    const div = makeDiv(width, height);
+    div.setAttribute('right', true);
+    div.textContent = 'R';
+    return div;
+  }
+
+  function clearLeft() {
+    const div = makeDiv();
+    div.id = 'cl';
+    div.setAttribute('clear-left', true);
+    div.textContent = 'CL';
+    return div;
+  }
+
+  function clearRight() {
+    const div = makeDiv();
+    div.setAttribute('clear-right', true);
+    div.textContent = 'CR';
+    return div;
+  }
+  
+  function makeWeirdBox() {
+    const div = floatLeft(50,50);
+    div.remove();
+    const parent = document.createElement('div');
+    parent.appendChild(div);
+    container.appendChild(parent);
+    return parent;
+  }
+
+  function showOpportunities(step) {
+    // Whatever.
+    let b1,b2;
+    switch(step) {
+      case 0:
+        b1 = makeDiv(300, 500, true);
+        b1.style.left = '100px';
+        b2 = makeDiv(400, 400, true);
+        b2.style.top = '100px';
+        break;
+      case 1:
+        b1 = makeDiv(200, 500, true);
+        b1.style.left = '100px';
+        b2 = makeDiv(400, 400, true);
+        b2.style.top = '100px';
+        break;
+      case 2:
+        b1 = makeDiv(150, 500, true);
+        b1.style.left = '150px';
+        b2 = makeDiv(400, 400, true);
+        b2.style.top = '100px';
+        break;
+      case 3:
+        b1 = makeDiv(100, 400, true);
+        b1.style.left = '300px';
+        b1.style.top = '100px';
+        b2 = makeDiv(400, 300, true);
+        b2.style.top = '200px';
+        break;
+      case 4:
+        b1 = makeDiv(250, 300, true);
+        b1.style.top = '200px';
+        b2 = makeDiv(400, 200, true);
+        b2.style.top = '300px';
+        break;
+      case 5:
+        b1 = makeDiv(200, 300, true);
+        b1.style.top = '200px';
+        b1.style.left = '50px';
+        b2 = makeDiv(400, 200, true);
+        b2.style.top = '300px';
+        break;
+      case 6:
+        b1 = makeDiv(150, 300, true);
+        b1.style.top = '200px';
+        b1.style.left = '50px';
+        b2 = makeDiv(400, 200, true);
+        b2.style.top = '300px';
+        break;
+      case 7:
+        b2 = makeDiv(400, 150, true);
+        b2.style.top = '350px';
+        break;
+      case 8:
+        b1 = makeDiv(300, 150, true);
+        b1.style.top = '350px';
+        b1.style.left = '50px';
+        b2 = makeDiv(400, 100, true);
+        b2.style.top = '400px';
+        break;
+      case 9:
+        b1 = makeDiv(400, 50, true);
+        b1.style.top = '450px';
+        break;
+      case 10:
+        b1 = makeDiv(300, 50, true);
+        b1.style.left = '50px';
+        b1.style.top = '450px';
+        break;
+      case 11:
+        b1 = makeDiv(200, 50, true);
+        b1.style.left = '150px';
+        b1.style.top = '450px';
+        break;
+    }
+    if (b1)
+      b1.classList.add('opp');
+    if (b2)
+    b2.classList.add('opp');
+    
+  }
+
+  function moveShelf(step) {
+    let shelf = makeDiv(400,0,true);
+    shelf.classList.add('shelf');
+    switch(step) {
+      case 0:
+      case 1:
+      case 2:
+        shelf.style.top = '0px';
+        break;
+       case 3:
+        shelf.style.top = '100px';
+        break;
+      case 4:
+      case 5:
+      case 6:
+        shelf.style.top = '200px';
+        break;
+      case 7:
+        shelf.style.top = '350px';
+        break;
+    }
+  }
+
+  function showHelp(step) {
+    let message = '';
+    switch(step) {
+      case 0:
+        message = `The pink box is a <code>float:left</code> box, which means we're in the float positioning algorithm land. The black dotted
+line is the <b>shelf</b>, the line that the algorithm will start searching for possible areas to place the next 
+floating box. The shelf starts at the top position of the last placed floating box (in this case, the pink one).
+These areas (or <b>opportunities</b>) are marked in blue; hover over them to see them. If the next floating box can fit next to our 
+current box, it will go there. Otherwise, it will go below it, and the shelf will move.
+`;
+        break;
+      case 1:
+        message = `The blue box is a <code>float:right</code> box. It fits in the area starting at the shelf line, so it was positioned there. 
+After adding this box, we update the opportunities for the next box. The shelf stays the same, since the blue box (the last positioned float)
+has the same top as the pink box.
+`;
+        break;
+      case 2:
+        message = `The same thing happens for this next <code>float:left</code> box, which also fits on that line.
+`;
+        break;
+      case 3:
+        message = `This <code>float:left</code> box didn't fit on the same line, so it had to move below the previous floats. This updates the shelf, which
+will now point to the top of this box. 
+<br><br>
+If you were to insert a text element (which, remember, gets positioned according to the non-floaty flow), the browser 
+will try to find an opportunity for positioning it starting from the top of the parent box, and end up floating it in the 
+empty space on the first line, if it fits. Otherwise, it will try to find the next big enough empty space.
+<br>
+Try this to see where that text would get placed:
+<br>
+<button onclick="insertText('batman')">insert a &lt;span&gt;batman&lt;/span&gt;</button>
+<button onclick="insertText('nanananananananabatmaaaaaan')">insert a &lt;span&gt;nanananananananabatmaaaaaan&lt;/span&gt;</button>
+`;
+        break;
+      case 4:
+        message = `This <code>float:right</code> box also didn't fit on the same line, so it had to move below the previous floats. This updates the shelf, which
+will now point to the top of this box.
+`;
+        break;
+      case 5:
+        message = `This <code>float:left</code> box fits on the same line, so it will go there; the shelf doesn't need to update.
+`;
+        break;
+      case 6:
+        message = `And the same for this <code>float:right</code> box.
+`;
+        break;
+      case 7:
+        message = `This is a <code>clear:left</code> box. This means that even though this box would have normally
+fit on the previous shelf, it will be moved to a new shelf (because it doesn't want to be placed with any floating elements to the left).
+Also, because this is a <code>display:block</code> box, it will move the shelf to right below it.
+<br><br>
+If this box were a <code>display:inline-block</code> box instead, we are back in the non-floaty text example from before. The browser will 
+basically treat this as
+text and not position it according to the float positioning algorithm. Instead, it will try to find an opportunity for
+it starting from the top of the parent box. The available areas for 
+text are all the white, empty areas. Try these following widths and heights to see where the box would get placed:
+<br>
+<button onclick="cl.style.display='inline-block';cl.style.width='50px';cl.style.height='50px'">display:inline-block; width: 50px, height: 50px;</button>
+<button onclick="cl.style.display='inline-block';cl.style.width='140px';cl.style.height='50px'">display:inline-block; width: 140px, height: 50px;</button>
+<button onclick="cl.style.display='inline-block';cl.style.width='140px';cl.style.height='150px'">display:inline-block; width: 140px, height: 150px;</button>
+<button onclick="cl.style.display='inline-block';cl.style.width='160px';cl.style.height='150px'">display:inline-block; width: 160px, height: 150px;</button>
+<button onclick="cl.style.display='block';cl.style.width='50px';cl.style.height='50px'">display:block; width: 50px, height: 50px;</button>
+`
+        break;
+      case 8:
+        message = `The previous <code>clear:left</code> box only affects <b>its</b> float position, not the position of elements
+after it. These new boxes float as they did before.`
+        break;
+      case 9:
+        message = `This is a <code>clear:right</code> box, and behaves very similarly to the <code>clear:left</code> box. 
+it means that even thought this box would have normally
+fit on the previous shelf, it will be moved to a new shelf (because it doesn't want to be placed with any floating elements to the right).
+Also, because this is a <code>display:block</code> box, it will move the shelf to right below it.`
+        
+        break;
+      case 10:
+      case 11:
+        message = `And these new boxes float as they did before.`
+        break;
+      default:
+        message = `This demo is done! 🏆🎉`
+        break;
+        
+    }
+    output.innerHTML = message;
+  }
+
+  function makeDiv(width, height, isAbsolute) {
+    const div = document.createElement('div');
+    if (width) {
+      div.style.width = width + 'px';
+    }
+    if (height) {
+      div.style.height = div.style.lineHeight = height + 'px';
+    }
+    if (isAbsolute) {
+      div.style.position = 'absolute';
+    }
+    container.appendChild(div);
+    return div;
+  }
+  
+  function insertText(text) {
+    let span = document.getElementById('inlineText');
+    
+    if (!span) {
+      span = document.createElement('span');
+      span.id = 'inlineText';
+      container.appendChild(span);
+    }
+    span.textContent = text;
+  }
+ </script>
+
+</html>

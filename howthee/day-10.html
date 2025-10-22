@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>inktober experiment</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="style.css">
+    <script src="sheriff.js"></script>
+    <style>
+      #output {
+        background: #FFCF32;
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+         -webkit-tap-highlight-color:rgba(0,0,0,0);
+      }
+      .pixel {
+        border: 2px solid transparent;
+        transition: all 0.5s;
+        text-align: center;
+        cursor: pointer;
+        vertical-align: middle;
+        background: white;
+         -webkit-tap-highlight-color:rgba(0,0,0,0);
+        margin: 2px;
+      }
+      .pixel.block {
+        background: white;
+        opacity: 0;
+      }
+      .pixel:hover {
+        background: #EF4686;
+      }
+      @media screen and (max-width: 700px) {
+        .pixel {
+          font-size: 27px;
+        }
+      }
+      @media screen and (max-width: 400px) {
+        .pixel {
+          font-size: 20px;
+        }
+        #output { 
+          padding: 10px;
+        }
+      }
+      
+    }
+    </style>
+  </head>
+  <body>
+    <h1>#inktober: an experiment</h1>
+    <div class="an-art" title="I'm starting with the 'I'm the sheriff of circle-punch', and adding a feature every day. To see the previous days, look at the Glitch code or go to howthee.glitch.me/day-x.html.">
+      <pre id="output"></pre>
+    </div>
+    <div class="an-art-label">
+      <button class="action" onclick="window.location = `https://howthee.glitch.me/day-${today-1}.html`">🔙</button>
+      <div>
+        <b>Day 10</b>: I Hate Sliding Puzzles.
+      </div>
+      <button class="action" onclick="window.location = `https://howthee.glitch.me/day-${today+1}.html`">🔜</button>
+    </div>
+    
+    <footer>
+      <hr>
+      <h3>a weird art experiment by <a href="https://twitter.com/notwaldorf">monica</a></h3>
+    </footer>
+    
+    <div class="glitchButton" style="position:fixed;top:20px;right:20px;"></div>
+    <script src="https://button.glitch.me/button.js"></script>
+  </body>
+  <script>
+    const today = 10;
+    output.innerHTML = getSheriff('👔');
+    
+    doTheSetup();
+    
+    output.addEventListener('click', (event) => {
+      const pixel = event.target.parentNode;
+      if (!pixel.classList.contains('pixel'))
+        return;
+      
+      const thisX = parseInt(pixel.dataset.x);
+      const thisY = parseInt(pixel.dataset.y);
+      
+      const block = output.querySelector('.block');
+      const blockX = parseInt(block.dataset.x);
+      const blockY = parseInt(block.dataset.y);
+      
+      if ((thisX + 1 === blockX && thisY === blockY) || 
+          (thisX - 1 === blockX && thisY === blockY) ||
+          (thisY - 1 === blockY && thisX === blockX) ||
+          (thisY + 1 === blockY && thisX === blockX)) {
+        flip(pixel, block);
+      } 
+    });
+    
+    function doTheSetup() {
+      let block = output.querySelector('.space');
+      block.classList.remove('space');
+      block.classList.add('block');
+      block.textContent = '🔲';
+
+      // Shuffle the boxes around.
+      let pixels = output.querySelectorAll('.pixel');
+      const indices = new Array(pixels.length);
+      for (let i = 0; i < pixels.length; i++) {
+        indices[i] = i;
+      }
+      shuffleArray(indices);
+      output.innerHTML = '';
+      for (let i = 0; i < indices.length; i++) {
+        output.appendChild(pixels[indices[i]]);
+      }
+
+      // Assign locations to all of them.
+      pixels = output.querySelectorAll('.pixel');
+      let x = 0, y = 0;
+      for (let i = 0; i < pixels.length; i++) {
+        pixels[i].dataset.x = x;
+        pixels[i].dataset.y = y;
+        x++;
+        if (x === 7) {
+          x = 0;
+          y++;
+        }
+      }
+    }
+    
+    function flip(box1, box2) {
+      const clone1 = box1.cloneNode(true);
+      const clone2 = box2.cloneNode(true);
+
+      output.replaceChild(clone1, box2);
+      output.replaceChild(clone2, box1);
+      
+      clone1.dataset.x = box2.dataset.x;
+      clone1.dataset.y = box2.dataset.y;
+      clone2.dataset.x = box1.dataset.x;
+      clone2.dataset.y = box1.dataset.y;
+    }
+    /**
+     * Randomize array element order in-place.
+     * Using Durstenfeld shuffle algorithm.
+     */
+    function shuffleArray(array) {
+      for (var i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        let temp = array[i];
+        array[i] = array[j];
+        array[j] = temp;
+      }
+    }
+  </script>
+</html>

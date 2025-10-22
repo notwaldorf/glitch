@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>inktober experiment</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="style.css">
+    <script src="sheriff.js"></script>
+    <style>
+      canvas {background: white;}
+    </style>
+  </head>
+  <body>
+    <h1>#inktober: an experiment</h1>
+    <div class="an-art" title="I'm starting with the 'I'm the sheriff of circle-punch', and adding a feature every day. To see the previous days, look at the Glitch code or go to howthee.glitch.me/day-x.html.">
+      <canvas class="inset" id="c"></canvas>
+    </div>
+    <div class="an-art-label">
+      <button class="action" onclick="window.location = `https://howthee.glitch.me/day-${today-1}.html`">🔙</button>
+      <div>
+        <b>Day 23</b>: Click to Enhance.
+      </div>
+      <button class="action" onclick="window.location = `https://howthee.glitch.me/day-${today+1}.html`">🔜</button>
+    </div>
+    <img id="img" hidden>
+    
+    <footer>
+      <hr>
+      <h3>a weird art experiment by <a href="https://twitter.com/notwaldorf">monica</a></h3>
+    </footer>
+    <div class="glitchButton" style="position:fixed;top:20px;right:20px;"></div>
+    <script src="https://button.glitch.me/button.js"></script>
+  </body>
+  <script>
+    const today = 23; 
+    const canvas = document.getElementById('c');
+    const ctx = canvas.getContext('2d');
+    const dpr = window.devicePixelRatio || 1;  
+
+    const w = window.innerWidth > 500 ? 360 : window.innerWidth;
+    const h = window.innerWidth > 500 ? 360 : window.innerHeight - 300;
+    const font = window.innerWidth > 500 ? 25 : 18;
+    
+    canvas.width = w;
+    canvas.height = h;
+    canvas.style.width = w + 'px';
+    canvas.style.height = h + 'px';
+    ctx.fillStyle = 'white';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    
+    // Show a sheriff.
+    ctx.font = `${font}px monospace`;
+    const arr = getSheriffAsText('⭐️');
+    for (var i = 0; i < arr.length; i++) {
+      ctx.fillText(arr[i].join(''), 0, font*(i+1));
+    }
+    
+    // Save the sheriff as an image.
+    img.src = canvas.toDataURL('image/png');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+  
+    let factor = 15;
+    let haventScaled = true;
+    img.onload = () => pixellate(factor);
+    
+    canvas.addEventListener('click', function() {
+      factor = Math.max(0, factor - 1);
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      pixellate(factor);
+    });
+    
+    function pixellate(factor = 2) {
+      // Pixellation.
+      const value = factor * dpr;
+      const fw = factor === 0 ? 0 : canvas.width / value;
+      const fh = factor === 0 ? 0 : canvas.height / value;
+      
+      // Turn off image aliasing.
+      ctx.msImageSmoothingEnabled = factor === 0;
+      ctx.mozImageSmoothingEnabled = factor === 0;
+      ctx.webkitImageSmoothingEnabled = factor === 0;
+      ctx.imageSmoothingEnabled = factor === 0;
+      
+      if (factor === 0 && haventScaled) {
+        ctx.scale(dpr, dpr);
+        haventScaled = false;
+      }
+      if (factor === 0) {
+        ctx.drawImage(img, 50/dpr, 0, w, h);
+      } else {
+        // Scale down.
+        ctx.drawImage(img, 0, 0, fw, fh);
+
+        // Scale back up.
+        // drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight)
+        ctx.drawImage(canvas, 0, 0, fw, fh, 50, 0, w * dpr, h * dpr);
+      }
+    }
+  </script>
+</html>

@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>inktober experiment</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="style.css">
+    <script src="sheriff.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@magenta/music@1.1.5"></script>
+    <style>
+    </style>
+  </head>
+  <body>
+    <h1>#inktober: an experiment</h1>
+    <div id="wrapper" class="an-art" title="I'm starting with the 'I'm the sheriff of circle-punch', and adding a feature every day. To see the previous days, look at the Glitch code or go to howthee.glitch.me/day-x.html.">
+      <pre id="output"></pre>
+    </div>
+    <div class="an-art-label">
+      <button class="action" onclick="window.location = `https://howthee.glitch.me/day-${today-1}.html`">🔙</button>
+      <div>
+        <b>Day 17</b>: The Instrument Nobody Asked For<br>
+      </div>
+      <button class="action" onclick="window.location = `https://howthee.glitch.me/day-${today+1}.html`">🔜</button>
+    </div>
+    <div class="an-art-help">
+      <hr>
+      Hover or click on an emoji or a space. Spaces are minor, emoji are major, everything is an arpeggio, nothing makes sense.
+    </div>
+
+    <footer>
+      <hr>
+      <h3>a weird art experiment by <a href="https://twitter.com/notwaldorf">monica</a></h3>
+    </footer>
+    <div class="glitchButton" style="position:fixed;top:20px;right:20px;"></div>
+    <script src="https://button.glitch.me/button.js"></script>
+  </body>
+  <script>
+    const today = 17;
+    output.innerHTML = getSheriff('🎷');
+    
+    const major = [0, 4, 7, 12, 16, 12, 7, 4];
+    const minor = [0, 3, 7, 12, 15, 12, 7, 3];
+    const notesToPitches = {
+      'C4': 60, 
+      'D4': 62, 
+      'E4': 64, 
+      'F4': 65, 
+      'G4': 67, 
+      'A4': 69,
+      'B4': 71,
+      'A#': 70,
+      'D#': 63,
+      'G#': 68,
+      'C#': 61,
+      'F#': 66
+    }
+    const notes = Object.keys(notesToPitches);
+    
+    const player = new mm.SoundFontPlayer('https://storage.googleapis.com/magentadata/js/soundfonts/sgm_plus');
+    let placeInSequence = -1;
+    player.callbackObject = {
+      run: () => {
+        // This is a gross hack to keep track of where in the arpeggio we are 
+        // so that when we switch notes we continue from the same spot in the arpeggio.
+        placeInSequence++;
+      },
+      stop: () => { },
+    }
+    
+    // SoundFontPlayer works best if you load all of the possible sound samples ahead of time.
+    doSequenceForSamples();
+    
+    addKeysToEmoji();
+    
+    // Don't double play the same emoji.
+    let currentNote;
+    let seq;
+    
+    output.addEventListener('mouseover', doTheThing);
+    document.body.addEventListener('click', doTheThing);
+    output.addEventListener('mouseleave', () => {
+      player.stop();
+      placeInSequence = -1;
+    });
+    
+    function doTheThing(event) {
+      // Ignore non-emoji bits.
+      let target = event.target;
+      if (target.localName === 'span') target = target.parentElement;
+      if (!target.classList.contains('pixel'))
+        return;
+      
+      if (target.dataset.note === currentNote) {
+        return;
+      }
+      
+      seq = makeArpeggio(target.dataset.kind == 'major' ? major : minor, notesToPitches[target.dataset.note]);
+      currentNote = target.dataset.note;
+      player.stop();
+      playOrPause(true);
+    }
+    
+    function makeArpeggio(pattern, pitch) {
+      const seq = new mm.NoteSequence();
+      let step = 0;
+      const start = placeInSequence + 1;
+      for (let i = start; i < pattern.length + start; i++) {
+        const index = i % (pattern.length);
+        seq.notes.push({
+          pitch: pitch + pattern[index], 
+          quantizedStartStep: step * 2, 
+          quantizedEndStep: step * 2 + 2,
+          instrument: 10,
+          program: 10});  
+        step++;
+      }
+      seq.quantizationInfo = {stepsPerQuarter: 4};
+      seq.totalQuantizedSteps = seq.notes[seq.notes.length - 1].quantizedEndStep;
+      return seq;
+    }
+    
+    function playOrPause() {
+      if (player.isPlaying()) {
+        player.stop();
+      } else {
+        mm.Player.tone.context.resume();
+        playForever();
+      }
+    }
+    
+    function playForever(keepPlace) {
+      if (!keepPlace) {
+        placeInSequence = -1;
+      }
+      player.start(seq).then(() => {
+        playForever();
+      }) 
+    }
+    
+    function addKeysToEmoji() {
+      const pixels = output.querySelectorAll('.pixel');
+      for (let i = 0; i < pixels.length; i++) {
+        const index = i % (notes.length - 1);
+        pixels[i].dataset.note = notes[index];
+
+        // Spaces are minor.
+        pixels[i].dataset.kind = pixels[i].classList.contains('space') ? 'minor' : 'major';
+      }
+    }
+    
+    function doSequenceForSamples() {
+      const seq = new mm.NoteSequence();
+      for (let n = 0; n < notes.length; n++) {
+        const pitch = notesToPitches[notes[n]];
+        for (let i = 0; i < major.length; i++) {
+          seq.notes.push({
+            pitch: pitch + major[i], 
+            quantizedStartStep: i * 2, 
+            quantizedEndStep: i * 2 + 2,
+            instrument: 10,
+            program: 10}); 
+          seq.notes.push({
+            pitch: pitch + minor[i], 
+            quantizedStartStep: i * 2, 
+            quantizedEndStep: i * 2 + 2,
+            instrument: 10,
+            program: 10}); 
+        }
+      }
+      
+      player.loadSamples(seq);
+    }
+  </script>
+</html>

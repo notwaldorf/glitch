@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Intro to RL: Q learning</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="styles.css">
+    <script src="state-machine.js"></script>
+    <script src="gridworld.js"></script>
+    <script src="q-learner.js"></script>
+  </head>
+  <body>
+    <h1>q-learning</h1>
+    <ol>
+      <li><b>Play</b>. Notice that you're walking around aimlessly</li>
+      <li><b>Pause</b>.</li>
+      <li><b>Train</b>. Wait. Woooo, a heatmap of important states!</li>
+      <li><b>Play again</b>. You're crushing it!</li>
+      <li><b>Reset</b> if you want to clear everything you've learnt and start from scratch.</li>
+    </ol>
+    <header>
+      <div>
+        <button onclick="world.start(false /* slow */)" title="Start">
+          <svg fill="#000000" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M0 0h24v24H0z" fill="none"/>
+            <path d="M10 16.5l6-4.5-6-4.5v9zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/>
+          </svg>
+        </button>
+        <button onclick="world.stop()" title="Stop">
+          <svg fill="#000000" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M0 0h24v24H0z" fill="none"/>
+            <path d="M9 16h2V8H9v8zm3-14C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm1-4h2V8h-2v8z"/>
+          </svg>
+        </button>
+        <button onclick="train(event)" title="Train agent">
+          <svg fill="#000000" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M0 0h24v24H0z" fill="none"/>
+            <path d="M5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82zM12 3L1 9l11 6 9-4.91V17h2V9L12 3z"/>
+          </svg>
+        </button>
+        <button onclick="reset()" title="Reset">    
+          <svg xmlns="http://www.w3.org/2000/svg" fill="#000000" height="24" viewBox="0 0 24 24" width="24">
+            <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+            <path d="M0 0h24v24H0z" fill="none"/>
+          </svg>
+        </button>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      </div>
+      <div>
+        <span class="big">reward: <span id="score">0</span>&nbsp;&nbsp;&nbsp;</span>
+        <span class="big">steps: <span id="steps">0</span></span>
+      </div>
+    </header>
+    <div class="container"></div>
+    <footer>
+      made with 🤖 by <a href="https://twitter.com/notwaldorf">monica</a>. check the <a href="https://glitch.com/edit/#!/q-learning">code</a> out on glitch!
+    </footer>
+  </body>
+  
+  <script>
+    const SIZE = 10;
+    const container = document.querySelector('.container');
+    const world = new Gridworld(SIZE);
+    const agent = new QLearner(world);
+    
+    draw();
+    document.addEventListener('did-step', draw);
+    
+    function train(e) {
+      agent.train(10000);
+      world.policy = agent.policy();
+      draw();
+    }
+    
+    function reset() {
+      world.reset();
+      agent.reset();
+      draw();
+    }
+    
+    function draw() {
+      container.innerHTML = '';
+      container.style['grid-template-columns'] = 
+          container.style['grid-template-rows'] = '50px '.repeat(SIZE);
+      
+
+      for (var i = 0; i < world.states.length; i++) {
+        const box = document.createElement('div');
+
+        if (world.policy) {
+          box.textContent = world.actions[world.policy[i]].name;
+          const value = agent.Q[i][world.policy[i]];
+          // Make the alpha look nice.
+          box.style['background-color'] = `rgba(139, 195, 74, ${value})`;
+        } 
+        if (world.states[i].id === world.goalState) {
+          box.classList.add('goal');
+        }
+        
+        if (world.states[i].id === world.currentState) {
+          box.classList.add('current');
+        } 
+        
+        container.appendChild(box);
+      }
+      
+      document.getElementById('score').textContent = world.score;
+      document.getElementById('steps').textContent = world.totalSteps;
+    }
+  </script>
+</html>

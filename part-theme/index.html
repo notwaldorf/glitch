@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Welcome to Glitch!</title>
+    <meta name="description" content="A cool thing made with Glitch">
+    <link id="favicon" rel="icon" href="https://glitch.com/edit/favicon-app.ico" type="image/x-icon">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <style>
+      body {
+        font-family: Helvetica, sans-serif;
+        padding: 40px;
+        --text-color: #3F51B5;
+        --underline-color: #3F51B5;
+        --placeholder-color: #B0BEC5;
+      }
+      .unresolved {
+        display: none;
+      }
+      h2 {
+        margin: 40px 0;
+      }
+    </style>
+    
+  <script type="module">
+      import {AForm} from '/elements/a-form.js';
+      import {AnotherForm} from '/elements/another-form.js';
+    </script>
+  </head>
+
+  <body onload="document.body.classList.remove('unresolved')" class="unresolved">
+    <h2>
+      Here is <code>&lt;a-form&gt;</code>. It's only styled using <code>::theme</code>
+    </h2>
+    <p>
+      Theme:
+        <input type="radio" id="blue" name="color" value="blue" checked>
+        <label for="blue">Blue</label>
+        <input type="radio" id="pink" name="color" value="pink">
+        <label for="pink">Pink</label>
+        <input type="radio" id="green" name="color" value="green">
+        <label for="green">Green</label>
+    </p>
+    <a-form></a-form>
+   
+    <h2>
+      Here is <code>&lt;another-form&gt;</code>. This has exactly the same elements as <code>&lt;a-form&gt;</code>, but
+      all are heavily styled using <code>::part</code>
+    </h2>
+    <another-form></another-form>
+    
+    <script>
+      var radios = document.querySelectorAll('input[type=radio]');
+      for (var i = 0; i < radios.length; i++) {
+        radios[i].addEventListener('change', function(){ 
+          if (this.value === 'blue') {
+            document.body.style.setProperty('--text-color', '#3F51B5');
+            document.body.style.setProperty('--underline-color', '#3F51B5');
+            document.body.style.setProperty('--placeholder-color', '#B0BEC5');
+          } else if (this.value === 'pink') {
+            document.body.style.setProperty('--text-color', '#E91E63');
+            document.body.style.setProperty('--underline-color', '#E91E63');
+            document.body.style.setProperty('--placeholder-color', '#F8BBD0');
+          } else if (this.value === 'green') {
+            document.body.style.setProperty('--text-color', '#4CAF50');
+            document.body.style.setProperty('--underline-color', '#4CAF50');
+            document.body.style.setProperty('--placeholder-color', '#CDDC39');
+          }
+        })
+      }
+    </script>
+    
+    <div class="glitchButton" style="position:fixed;top:20px;right:20px;"></div>
+    <script src="https://button.glitch.me/button.js"></script>
+  </body>
+</html>

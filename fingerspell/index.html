@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Learn fingerspelling</title>
+    
+    <link rel="stylesheet" href="/style.css">
+    <script src="/script.js" defer></script>
+  </head>  
+  <body>
+    <div class="circle asl"></div>
+    
+    <div class="horizontal">
+      <button class="box" onclick="repeat()">repeat</button>
+      <button class="box accent" onclick="answer()">show answer</button>
+      <button class="box" onclick="next()">next</button>
+    </div>
+    <div class="horizontal">
+      <span class="text">faster</span> <input type="range" min="50" max="2000" step="100"> <span class="text">slower</span>
+    </div>
+    
+    <div class="horizontal">
+      <label>
+        <input type="radio" checked name="lang" value="asl" onchange="changeLanguage()">
+        <span class="text">ASL</span>
+      </label>
+      <label>
+        <input type="radio" name="lang" value="bsl" onchange="changeLanguage()">
+        <span class="text">BSL</span>
+      </label>
+      <label>
+        <input type="radio" name="lang" value="auslan" onchange="changeLanguage()">
+        <span class="text">Auslan</span>
+      </label>
+    </div>
+    
+    <footer>a <a href="https://glitch.com/edit/#!/fingerspell">glitch</a> by <a href="https://twitter.com/notwaldorf">monica</a> who
+      is trying to learn ASL. thanks to <a href="https://twitter.com/jameskingsmill">james</a> for adding auslan support!
+      if you want an alphabet added, please let me know!</footer>
+  </body>
+</html>

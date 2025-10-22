@@ -1,0 +1,217 @@
+* {box-sizing: border-box}
+[hidden] {display: none !important}
+[disabled] {pointer-events:none; opacity: 0.3}
+.horizontal {display: flex; flex-direction: row; justify-content: space-between}
+.vertical {display: flex; flex-direction: column}
+.center {justify-content: center; align-items: center}
+.flex {flex: 1}
+
+html {
+  --spacing-xs: 8px;
+  --spacing: 24px;
+  --spacing-s: 12px;
+  --spacing-m: 36px;
+  --note-height: 20px;
+  width: 100vw;
+  min-height: 90vh;
+  
+}
+
+html, 
+body {
+  overflow-x: hidden;
+}
+
+body {
+  font-family: 'Poppins', helvetica, arial, sans-serif;
+  margin: 0 auto;
+  padding-top: 1em;
+  color: white;
+  background: black;
+  width: 98%;
+  max-width: 800px;
+}
+
+h1 {
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  text-align: center;
+}
+
+h1 > span {
+  font-weight: normal;
+  color: #474747;
+}
+
+a:link, a:visited {
+  font-weight: bold;
+  letter-spacing: 1px;
+  color: white;
+}
+footer {
+  font-size: 12px;
+  width: 100%;
+  text-align: center;
+  margin: var(--spacing) auto;
+  
+}
+
+.do { background: #EB4664}
+.re { background: #FFAB40}
+.mi { background: #FFE906}
+.fa { background: #8BC34A}
+.sol { background: #02DAC5}
+.la { background: #FF80AB}
+.si { background: #B894F6}
+
+.legend, .toggles {
+  padding: 1em;
+}
+
+.legend, .note-holder {
+  width: 100%;
+  max-width: 100%;
+}
+
+.note-holder {
+  position: relative;
+}
+.staff-edge {
+  border-left: 10px solid white;
+  border-right: 10px solid white;
+}
+.note-holder > img {
+  filter: invert(1);
+  width: 50px;
+  position: absolute;
+  left: 4px;
+}
+
+.middle { border-color: transparent }
+.treble > img {
+  height: calc(7 * var(--note-height));
+  top: calc(0px - var(--note-height));
+}
+.bass > img {
+  height: calc(3 * var(--note-height));
+  top: calc(var(--note-height) / 4);
+}
+
+.note-scroller {
+  overflow: auto;
+}
+.note-holder > div {
+  height: var(--note-height);
+  width: var(--note-height);
+  border-radius: 50%;
+  position: absolute;  
+  opacity: 1;
+  transition: opacity 0.2s ease-in-out;
+  
+  animation-duration: 0.5s;
+  animation-name: bounce;
+  animation-timing-function: ease;
+  
+  z-index: 100;
+}
+.note-holder > div.hidden {
+  opacity: 0;
+  transition: opacity 0.2s ease-in-out;
+  animation: none;
+}
+
+hr {
+  margin-bottom: var(--note-height);
+  height: 2px;
+  background: white;
+  border: none;
+}
+
+hr.dotted {
+  background-image: linear-gradient(90deg, #000000 25%, #ffffff 25%, #ffffff 50%, #000000 50%, #000000 75%, #ffffff 75%, #ffffff 100%);
+  background-size: 16.00px 16.00px;
+  opacity: 0.4;
+}
+
+
+.legend > button {
+  /* resets */
+  appearance: none;
+  border: none;
+  font-family: inherit;
+  cursor: pointer;
+  position: relative;
+  padding: 0;
+  margin: 0;
+  
+  width: 50px;
+  height: 50px;
+  border: 4px solid black;
+  border-radius: 50%;
+  margin: var(--spacing-xs);
+  
+  line-height: 25px;
+  text-align: center;
+  font-weight: bold;
+  font-size: 18px;
+  color: black;
+  
+  transition: border-color 0.2s ease-in-out;
+}
+
+.legend {
+  flex-wrap: wrap;
+  
+}
+.legend > button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px white;
+  border-color: black;
+}
+
+.legend > button[on], .legend > button.on  {
+  border-color: white;
+  transform: scale(1.2);
+}
+
+button.toggle {
+  /* resets */
+  appearance: none;
+  border: none;
+  font-family: inherit;
+  cursor: pointer;
+  position: relative;
+  border: 8px solid black;
+  padding: 0;
+  margin: 0;
+  
+  flex: 1;
+  font-size: 20px;
+  font-weight: bold;
+  background: #474747;
+  color: white;
+  opacity: 0.5;
+  transition: background 0.2s ease-in-out;
+}
+
+button.toggle:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px white;
+  border-color: black;
+}
+button.toggle.on {
+  background: white;
+  color: black;
+  opacity: 1;
+}
+
+
+/* Thank you https://css-tricks.com/making-css-animations-feel-natural */
+@keyframes bounce {
+0%   { transform: scale(1,1)    translateY(0); }
+10%  { transform: scale(1.1,.5) translateY(0); }
+30%  { transform: scale(.5,1.1) translateY(-10px); }
+50%  { transform: scale(1,1)    translateY(0); }
+57%  { transform: scale(1,1)    translateY(-7px); }
+64%  { transform: scale(1,1)    translateY(0); }
+100% { transform: scale(1,1)    translateY(0); }

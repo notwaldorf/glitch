@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>inktober experiment</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="style.css">
+    <script src="sheriff.js"></script>
+    <style>
+      html {
+        --s1: calc(-1*var(--size));
+        --s2: calc(-2*var(--size));
+        --s3: calc(-3*var(--size));
+        --s4: calc(-4*var(--size));
+      }
+      .pixel.body {
+        overflow: hidden;
+        position: relative;
+        text-align: center;
+        white-space: nowrap;
+      }
+      .pixel.body span {
+        display: inline-block;
+        width: var(--size);
+        animation: scroll 10s cubic-bezier(0.000, 1, 0.000, 1) infinite;
+        animation-delay: 1s;
+      }
+      @keyframes scroll {
+        0%  { transform: translateX(0); }
+        25% { transform: translateX(var(--s1)) ;}
+        50% { transform: translateX(var(--s2)) ;}
+        75% { transform: translateX(var(--s3)) ;}
+        100% { transform: translateX(var(--s4)) ;}
+      }
+    </style>
+  </head>
+  <body>
+    <h1>#inktober: an experiment</h1>
+    <div class="an-art" title="I'm starting with the 'I'm the sheriff of circle-punch', and adding a feature every day. To see the previous days, look at the Glitch code or go to howthee.glitch.me/day-x.html.">
+      <pre id="output"></pre>
+    </div>
+    <div class="an-art-label">
+      <button class="action" onclick="window.location = `https://howthee.glitch.me/day-${today-1}.html`">🔙</button>
+      <div>
+        <b>Day 29</b>: The Circle of Life.
+      </div>
+      <button class="action" onclick="window.location = `https://howthee.glitch.me/day-${today+1}.html`">🔜</button>
+    </div>
+    
+    <footer>
+      <hr>
+      <h3>a weird art experiment by <a href="https://twitter.com/notwaldorf">monica</a></h3>
+    </footer>
+    <div class="glitchButton" style="position:fixed;top:20px;right:20px;"></div>
+    <script src="https://button.glitch.me/button.js"></script>
+  </body>
+  <script>
+    const today = 29; 
+    output.innerHTML = getSheriff('🥚');
+    const pixels = output.querySelectorAll('.pixel');
+    for (let i = 0; i < pixels.length; i++) {
+      if (pixels[i].classList.contains('body')) {
+        pixels[i].innerHTML = '<span>🥚</span><span>🐣</span><span>🐥</span><span>🐓</span><span>🍳</span>'
+      }   
+    }
+  </script>
+</html>

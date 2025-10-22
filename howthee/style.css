@@ -1,0 +1,170 @@
+@import url('https://fonts.googleapis.com/css?family=IBM+Plex+Mono:400,700');
+* { box-sizing: border-box; }
+html {
+  border-top: 10px solid black;
+}
+body {
+  font-family: 'IBM Plex Mono', monospace;
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 14px 0 24px 0;
+  text-align: center;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+h1 {
+  font-size: 30px;
+}
+
+h2 {
+  font-family: 'IBM Plex Mono', monospace;
+}
+
+a:link, a:visited {
+  color: black;
+  font-weight: bold;
+}
+
+footer {
+  margin-top: 48px;
+}
+
+/* Setup */
+.an-art {
+  display: inline-block;
+  padding: 24px;
+  border: 30px solid black;
+  margin: 20px auto;
+  box-shadow: inset 0px 0px 12px 0px rgba(0, 0, 0, 0.7),
+    3px 3px 11px rgba(0, 0, 0, 0.7);
+  box-shadow: inset 0px 0px 4px 0px rgba(0, 0, 0, 0.7), 6px 6px 0 0 rgba(0, 0, 0, 0.2);
+  background: rgba(0, 0, 0, 0.06);
+  border-width: 20px;
+}
+.an-art-label {
+  font-size: 16px;
+  padding: 0 24px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.an-art-help {
+  font-size: 14px;
+}
+
+.an-art-label .action {
+  border: none;
+  font-size: 20px;
+  font-weight: bold;
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+button:not(.action):not(.glitchButtonElement) {
+  outline: none;
+  text-align: center;
+  border-radius: 40px;
+  background: #fff;
+  border: 2px solid black;
+  color: black;
+  font-size: 12px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  padding: 4px 8px;
+}
+
+button:not(.action):not(.glitchButtonElement):hover {
+  color: white;
+  background: black;
+}
+
+button:not(.action)[disabled] {
+  opacity: 0.5;
+}
+  
+hr {
+  width: 80px;
+  height: 4px;
+  background: black;
+  box-shadow: none;
+  border: none;
+  margin: 10px auto;
+  box-sizing: border-box;
+}
+
+#output, .fake-output {
+  -webkit-tap-highlight-color:rgba(0,0,0,0);
+  margin: 0;
+  padding: 24px;
+  background: white;
+  box-shadow: inset 0 0 3px 0 rgba(0, 0, 0, 0.2);
+  text-align: center;
+}
+.inset {
+  box-shadow: inset 0 0 1px 0 rgba(0, 0, 0, 0.2);
+}
+
+/* The special bits */
+html {
+  --size: 40px;
+}
+.pixel {
+  display: inline-block;
+  font-size: 34px;
+  width: var(--size);
+  height: var(--size);
+  text-align: center;
+  cursor: pointer;
+  vertical-align: middle;
+}
+
+.pixel > span {
+  display: inline-block;
+  vertical-align: middle;
+}
+/*
+        _ _
+     .-/ / )
+     |/ / /    Sorry.
+     /.' /
+    // .---.
+   /   .--._\
+  /    `--' /
+ /     .---'
+/    .'
+    /
+*/
+#sup {
+  display: inline-block;
+  transform: scale(-1, -1);
+}
+.pixel span {
+  transform: translateY(-4px);
+}
+#pal {
+  display: inline-block;
+  transform: scale(1, -1);
+}
+
+@media screen and (max-width: 700px) {
+  html {
+    --size: 35px;
+  }
+  .pixel {
+    font-size: var(--size);
+  }
+  .glitchButtonElement img { width: 30px; }
+}
+@media screen and (max-width: 400px) {
+  html {
+    --size: 30px;
+  }
+  .glitchButtonElement img { width: 24px; }
+}

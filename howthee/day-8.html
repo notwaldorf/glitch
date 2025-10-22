@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>inktober experiment</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="style.css">
+    <script src="sheriff.js"></script>
+    <style>
+      body {
+        display: block;
+      }
+      .an-art {
+        position: relative;
+        height: 420px;
+        display: block;
+        padding: 0;
+      }
+      @media screen and (max-width: 700px) {
+        .an-art {
+          height: 400px;
+        }
+      }
+      @media screen and (max-width: 400px) {
+        .an-art {
+          height: 340px;
+        }
+      }
+
+      .art-wrapper {
+        overflow: hidden;
+        height: 100%;
+        width: 100%;
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      #output { 
+        margin: 0; 
+        position: absolute;
+        top: 24px; 
+      }
+      #output.animate {
+        animation: down 5s normal linear;
+      }
+      
+      /* Inspired by https://codepen.io/nsmirnova/pen/PqjNqW?page=1& */
+      #bits {
+        position: absolute;
+        top: calc(100% + 30px);
+        width: 100%;
+        height: 0px;
+        background: repeating-linear-gradient(to right, #e8eaeb, #e8eaeb 3px, transparent 3px, transparent 6px);
+      }
+      
+      #bits.animate {
+        animation: shred 5s normal linear;
+      }
+      
+      #output.done {
+        top: 100%;
+        display: none;
+      }
+      #bits.done {
+        height: 200px;
+      }
+      @keyframes down {
+        from { top: 24px; }
+        to { top: 100%; }
+      }
+      @keyframes shred {
+        from { height: 0; }
+        to { height: 200px; }
+      }
+
+    </style>
+  </head>
+  <body>
+    <h1>#inktober: an experiment</h1>
+    <div class="an-art" title="I'm starting with the 'I'm the sheriff of circle-punch', and adding a feature every day. To see the previous days, look at the Glitch code or go to howthee.glitch.me/day-x.html.">
+      <div class="art-wrapper">
+        <pre id="output"></pre>
+      </div>
+      <div id="bits"></div>
+    </div>
+    
+    <div class="an-art-label">
+      <button class="action" onclick="window.location = `https://howthee.glitch.me/day-${today-1}.html`">🔙</button>
+      <div>
+        <b>Day 8</b>: Don't Move.
+      </div>
+      <button class="action" onclick="window.location = `https://howthee.glitch.me/day-${today+1}.html`">🔜</button>
+    </div>
+
+    <footer>
+      <hr>
+      <h3>a weird art experiment by <a href="https://twitter.com/notwaldorf">monica</a></h3>
+    </footer>
+    <div class="glitchButton" style="position:fixed;top:20px;right:20px;"></div>
+    <script src="https://button.glitch.me/button.js"></script>
+  </body>
+  <script>
+    const today = 8;
+    window.defaultEmoji = '💰';
+    output.innerHTML = getSheriff();
+    
+    let hasMoved = false;
+    
+    function doTheThing() {
+      if (hasMoved) {
+        return;
+      }
+      
+      hasMoved = true;
+      output.classList.add('animate');
+      bits.classList.add('animate');
+    }
+    
+    window.addEventListener('mousemove', () => {
+      doTheThing();
+    });
+    
+    
+    document.addEventListener('click', () => {
+      doTheThing();
+    }, true);
+    
+    document.addEventListener("animationend", () => {
+      output.classList.remove('animate');
+      bits.classList.remove('animate');
+      output.classList.add('done');
+      bits.classList.add('done');
+    });
+  </script>
+</html>

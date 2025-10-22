@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>inktober experiment</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="style.css">
+    <script src="sheriff.js"></script>
+    <style>
+      body {
+        height: 6000px;
+        width: 6000px;
+        max-width: none;
+      }
+      .fixed {
+        position: fixed;
+        opacity: 0;
+      }
+      .pixel {
+        transition: all 0.5s;
+        margin: 1px;
+      }
+      .pixel.body {
+        xanimation: color 0.5s linear infinite;
+      }
+      
+      #head.in { animation: in-from-top 1s ease; }
+      #head.out { animation: out-from-top 1s ease; }
+      #sup.in { animation: in-from-left-and-mirror 1s ease; }
+      #pal.in { animation: in-from-right-and-mirror 1s ease; }
+      .boot.in {animation: in-from-left 1s ease;}
+      .boot.out {animation: out-from-left 1s ease;}
+      
+      @keyframes color {
+        50% { filter: hue-rotate(360deg); }
+      }
+      
+      @keyframes in-from-top {
+        0%, 60%, 75%, 90%, 100% { transition-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);}
+        0% { opacity: 0; transform: translate3d(0, -3000px, 0); }
+        60% { opacity: 1; transform: translate3d(0, 25px, 0); }
+        75% { transform: translate3d(0, -10px, 0); }
+        100% { transform: none; }
+      }
+      @keyframes in-from-left-and-mirror {
+        0%, 60%, 75%, 90%, 100% { transition-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000); }
+        0% { opacity: 0; transform: translate3d(-3000px, 0, 0) scale(-1, -1); }
+        60% { opacity: 1; transform: translate3d(25px, 0, 0) scale(-1, -1); }
+        75% { transform: translate3d(-10px, 0px, 0) scale(-1, -1) ; }
+        100% { transform: scale(-1, -1); }
+      }
+      @keyframes in-from-right-and-mirror {
+        0%, 60%, 75%, 90%, 100% { transition-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000); }
+        0% { opacity: 0; transform: translate3d(3000px, 0, 0) scale(1, -1); }
+        60% { opacity: 1; transform: translate3d(25px, 0, 0) scale(1, -1); }
+        75% { transform: translate3d(10px, 0px, 0) scale(1, -1); }
+        100% { transform: scale(1, -1); }
+      }
+      @keyframes in-from-left {
+        0%, 60%, 75%, 90%, 100% { transition-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000); }
+        0% { opacity: 0; transform: translate3d(-3000px, 0, 0); }
+        60% { opacity: 1; transform: translate3d(25px, 0, 0); }
+        75% { transform: translate3d(-10px, 0px, 0); }
+        100% { transform: none; }
+      }
+      @keyframes in-from-right {
+        0%, 60%, 75%, 90%, 100% { transition-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000); }
+        0% { opacity: 0; transform: translate3d(3000px, 0, 0); }
+        60% { opacity: 1; transform: translate3d(25px, 0, 0); }
+        75% { transform: translate3d(10px, 0px, 0); }
+        100% { transform: none; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="fixed" id="fixed"> 
+      <h1>#inktober: an experiment</h1>
+      <div class="an-art" title="I'm starting with the 'I'm the sheriff of circle-punch', and adding a feature every day. To see the previous days, look at the Glitch code or go to howthee.glitch.me/day-x.html.">
+        <pre id="output"></pre>
+      </div>
+      <div class="an-art-label">
+        <button class="action" onclick="window.location = `https://howthee.glitch.me/day-${today-1}.html`">🔙</button>
+        <div>
+          <b>Day 9</b>: Scroll. It's windy out there.
+        </div>
+        <button class="action" onclick="window.location = `https://howthee.glitch.me/day-${today+1}.html`">🔜</button>
+      </div>
+    </div>
+
+    <div class="glitchButton" style="position:fixed;top:20px;right:20px;"></div>
+    <script src="https://button.glitch.me/button.js"></script>
+  </body>
+  <script>
+    const today = 9;
+    output.innerHTML = getSheriff('🌀');
+    
+    fixed.style.left = (document.documentElement.clientWidth - fixed.getBoundingClientRect().width)/2 + 'px';
+    fixed.style.opacity = 1;
+    //head.classList.add('in');
+    // sup.classList.add('in');
+    // pal.classList.add('in');
+    
+    let lastScrollY = 0;
+    let lastScrollX = 0;
+    
+    const bodies = output.querySelectorAll('.body.pixel');
+    const spaces = output.querySelectorAll('.space.pixel');
+    
+    window.addEventListener('scroll', (e) => {
+      const scrollX = window.scrollX;
+      const scrollY = window.scrollY;
+      
+      if (window.scrollX > lastScrollX && window.scrollY === lastScrollY) {
+        sup.textContent = pal.textContent = '👉';
+        sup.style.transform = 'scale(1, 1)';
+        pal.style.transform = 'scale(1, 1)';
+        head.textContent = '👀';
+        head.style.transform = 'scale(-1, 1)';
+        for (let i = 0; i < spaces.length; i++) { 
+          spaces[i].textContent = '⏩';
+        } 
+      } else if (window.scrollX < lastScrollX && window.scrollY === lastScrollY) {
+        sup.textContent = pal.textContent = '👈';
+        sup.style.transform = 'scale(1, 1)';
+        pal.style.transform = 'scale(1, 1)';
+        head.textContent = '👀';
+        head.style.transform = 'scale(1, 1)';
+        for (let i = 0; i < spaces.length; i++) { 
+          spaces[i].textContent = '⏪';
+        } 
+      } else if (window.scrollY >= lastScrollY) {
+        sup.textContent = pal.textContent = '👌';
+        sup.style.transform = 'scale(-1, -1)';
+        pal.style.transform = 'scale(1, -1)';
+        head.textContent = '🤠';
+        head.style.transform = 'scale(1, 1)';
+        for (let i = 0; i < spaces.length; i++) { 
+          spaces[i].textContent = '⏬';
+        } 
+      } else {
+        sup.textContent = pal.textContent = '👍';
+        sup.style.transform = 'scale(-1, 1)';
+        pal.style.transform = 'scale(1, 1)';
+        head.textContent = '🙃';
+        head.style.transform = 'scale(1, 1)';
+        for (let i = 0; i < spaces.length; i++) { 
+          spaces[i].textContent = '⏫';
+        } 
+      }
+      
+      lastScrollY = window.scrollY;
+      lastScrollX = window.scrollX;
+    });
+  
+  </script>
+</html>

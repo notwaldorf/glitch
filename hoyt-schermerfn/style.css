@@ -1,0 +1,92 @@
+* {box-sizing: border-box;}
+
+html {
+  --pink: #F49CB4;
+  --cream: #FDDBF2;
+  --grey: #444;
+}
+body {
+  position: relative;
+  font-family: 'Pangolin', 'Monaco', 'Lucida Console', monospace;
+  letter-spacing: 1px;
+  padding: 2em;
+  font-size: 18px;
+  height: 100vh;
+  background-image: url('https://cdn.glitch.com/f13a9366-5418-4d69-86ec-349797d0cc8a%2Femily_clouds.jpg?v=1568310491572');
+  background-size: cover;
+  color: black;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+h1 {
+  font-family: "Helvetica Neue", helvetica, arial, sans-serif;
+  display: inline-block;
+  padding: 8px;
+  word-break: break-all;
+  background: var(--pink);
+  color: var(--grey);
+}
+
+a:link, a:visited {
+  text-decoration: none;
+  color: black;
+  border-bottom: 2px solid var(--grey);
+  font-weight: bold;
+}
+
+.content {
+  margin: 64px 0;
+  flex-grow: 1;
+}
+
+pre {
+  font-family: inherit;
+  letter-spacing: 2px;
+  font-size: 24px;
+  max-width: 600px;
+  word-wrap: break-word;
+  white-space: pre-wrap;
+}
+
+.button {
+  font-family: inherit;
+  font-size: inherit;
+  letter-spacing: inherit;
+  padding: 8px;
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s linear, color 0.2s linear;
+  background: rgba(255,255,255,0.5);
+}
+
+.button:hover {
+  color: black;
+  background: white;
+}
+
+.horizontal {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  line-height: 1.5;
+}
+
+footer {
+  font-size: 14px;
+  margin: 64px 0;
+}
+
+.box {
+  /* Thanks to Tiffany Rayside and https://codepen.io/tmrDevelops/pen/VeRvKX */
+  box-shadow: 20px 38px 34px -26px hsla(0,0%,0%,.2);
+  border-radius: 255px 15px 225px 15px/15px 225px 15px 255px;
+  border: solid 4px var(--grey);
+}
+.box.thin {
+  border-width: 2px; 
+}

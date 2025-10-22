@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Audio delay experiment</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Mono:400,700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/tone@latest/build/Tone.js"></script>
+    <link rel="stylesheet" href="/style.css">
+  </head>  
+  <body>
+    <h1>
+      How annoying is too annoying? (the audio remix)
+    </h1>
+    <p>
+      This is an experiment to see what amount of delay is too annoying for a user to <b>play music</b>.
+      You can compare this to the similar <a href="https://input-delay.glitch.me">typing experiment</a>.
+By the way: if you're using something like bluetooth headphones, these inherently have an audio delay 
+      (sometimes of as much as 100ms!), so these results will be really personal and aggravating.
+      Here are some presets:
+      <br>
+      <button class="btn" onclick="update(10)">fine</button>
+      <button class="btn" onclick="update(30)">could be worse</button>
+      <button class="btn" onclick="update(50)">it's worse</button>
+      <button class="btn" onclick="update(100)">really not great</button>
+      <button class="btn" onclick="update(200)">we're done here</button>
+      <button class="btn" onclick="update()">surprise me</button>
+      <br>
+      <button class="btn" onclick="update(-1)">variable latency mode (this is a horror)</button>
+    </p>
+    <div>
+      <span>Audio delay (you can change this)</span><br>
+      <label><input id="delay" value="5"> <b>ms</b></label>
+    </div>
+    
+    <p>Type the key corresponding to the piano key you want to play.
+      If you're not musical, this is Twinkle Twinkle Little Star: <br>
+    <b>q q t t y y t r r e e w w</b>
+    </p>
+    <div style="font-size:0px">
+      <div class="keyboard">
+        <div class="white-keys">
+         <button class="note-q" data-index="c4"><span>q</span></button>
+         <button class="note-w" data-index="d4"><span>w</span></button>
+         <button class="note-e" data-index="e4"><span>e</span></button>
+         <button class="note-r" data-index="f4"><span>r</span></button>
+         <button class="note-t" data-index="g4"><span>t</span></button>
+         <button class="note-y" data-index="a4"><span>y</span></button>
+         <button class="note-u" data-index="b4"><span>u</span></button>
+         <button class="note-i" data-index="c5"><span>i</span></button>
+         <button class="note-o" data-index="d5"><span>o</span></button>
+         <button class="note-p" data-index="e5"><span>p</span></button>
+         <button class="note-open" data-index="f5"><span>[</span></button>
+         <button class="note-close" data-index="g5"><span>]</span></button>
+        </div>
+        <div class="black-keys">
+          <button class="note-2 c" data-index="c#4"><span>2</span></button>
+          <button class="note-3 d" data-index="d#4"><span>3</span></button>
+          <button class="note-5 f" data-index="f#4"><span>5</span></button>
+          <button class="note-6 g" data-index="g#4"><span>6</span></button>
+          <button class="note-7 a" data-index="a#4"><span>7</span></button>
+          <button class="note-9 c2" data-index="c#5"><span>9</span></button>
+          <button class="note-0 d2" data-index="d#5"><span>0</span></button>
+          <button class="note-equal f2" data-index="f#5"><span>=</span></button>
+        </div>
+      </div>
+    </div>
+    
+    <p>This input will help you if you want to use this on mobile:<br> 
+      <input id="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="type your melody here">
+    </p> 
+    
+    <footer>Made by <a href="https://twitter.com/notwaldorf">Monica</a> who was initially annoyed by something else
+    but now is really annoyed by bluetooth headphone latency.</footer>
+    <div class="glitchButton" style="position:fixed;top:20px;right:20px;"></div>
+    <script src="https://button.glitch.me/button.js"></script>
+  </body>
+  
+  <script>
+    let variableMode = false;
+   
+    const synth = new Tone.Synth();
+    synth.oscillator.type = 'sine';
+    synth.toMaster();
+    
+    function blockFor(t) {
+      const start = performance.now();
+      while(performance.now() - start < t);
+    }
+    
+    document.querySelector('.keyboard').addEventListener('mousedown', (e) => {
+      const button = e.target;
+      doTheThing(button);
+    });
+   
+    text.addEventListener('keydown', (e) => {
+      handleKeyDown(e);
+      e.stopImmediatePropagation();
+    });
+    document.body.addEventListener('keydown', handleKeyDown);
+  
+    function handleKeyDown(e) {
+      let selector = `.note-${e.key}`;
+      if (e.key === '[') selector = '.note-open';
+      else if (e.key === ']') selector = '.note-close';
+      else if (e.key === '=') selector = '.note-equal';
+
+      const button = document.querySelector(selector);
+      if (!button) {
+        return;
+      }
+      doTheThing(button);
+    }
+    
+    function doTheThing(button) {
+      setTimeout(() => {
+        let t = parseFloat(delay.value);
+        if (variableMode) {
+          t = Math.floor(Math.random() * 200)
+        }
+        delay.value = t;
+        blockFor(t);
+        
+        button.classList.add('down');
+        synth.triggerAttackRelease(button.dataset.index, '8n')
+        setTimeout(() => button.classList.remove('down'), 150);
+      });
+    }
+    
+    function update(n) {
+      variableMode = false;
+      if (n === undefined) {
+        n = Math.floor(Math.random() * 500)
+      } else if (n === -1) {
+        variableMode = true;
+        n = '0-200'
+      }
+      delay.value = n;
+    }
+  </script>
+</html>

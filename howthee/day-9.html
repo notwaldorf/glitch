@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>inktober experiment</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="style.css">
+    <script src="sheriff.js"></script>
+    <style>
+      body {
+        height: 10000px;
+        width: 10000px;
+        max-width: none;
+      } 
+      h1 {
+        max-width: 100vw;
+      }
+      .fixed {
+        position: fixed;
+        opacity: 0;
+      }
+      .pixel {
+        transition: all 0.5s;
+        margin: 1px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="fixed" id="fixed"> 
+      <h1>#inktober: an experiment</h1>
+      <div class="an-art" title="I'm starting with the 'I'm the sheriff of circle-punch', and adding a feature every day. To see the previous days, look at the Glitch code or go to howthee.glitch.me/day-x.html.">
+        <pre id="output"></pre>
+      </div>
+      <div class="an-art-label">
+        <button class="action" onclick="window.location = `https://howthee.glitch.me/day-${today-1}.html`">🔙</button>
+        <div>
+          <b>Day 9</b>: Scroll. It's Windy Out There.
+        </div>
+        <button class="action" onclick="window.location = `https://howthee.glitch.me/day-${today+1}.html`">🔜</button>
+      </div>
+    </div>
+
+    <footer>
+      <hr>
+      <h3>a weird art experiment by <a href="https://twitter.com/notwaldorf">monica</a></h3>
+    </footer>
+    <div class="glitchButton" style="position:fixed;top:20px;right:20px;"></div>
+    <script src="https://button.glitch.me/button.js"></script>
+  </body>
+  <script>
+    const today = 9;
+    output.innerHTML = getSheriff('🌀');
+    
+    fixed.style.left = (document.documentElement.clientWidth - fixed.getBoundingClientRect().width)/2 + 'px';
+    fixed.style.opacity = 1;
+   
+    let lastScrollY = 0;
+    let lastScrollX = 0;
+    
+    const spaces = output.querySelectorAll('.space.pixel');
+    for (let i = 0; i < spaces.length; i++) { 
+      spaces[i].textContent = '⏬';
+    } 
+    
+    window.addEventListener('scroll', (e) => {
+      const scrollX = window.scrollX;
+      const scrollY = window.scrollY;
+      
+      if (window.scrollX > lastScrollX && window.scrollY === lastScrollY) {
+        sup.textContent = pal.textContent = '👉';
+        sup.style.transform = 'scale(1, 1)';
+        pal.style.transform = 'scale(1, 1)';
+        head.textContent = '👀';
+        head.style.transform = 'scale(-1, 1)';
+        for (let i = 0; i < spaces.length; i++) { 
+          spaces[i].textContent = '⏩';
+        } 
+      } else if (window.scrollX < lastScrollX && window.scrollY === lastScrollY) {
+        sup.textContent = pal.textContent = '👈';
+        sup.style.transform = 'scale(1, 1)';
+        pal.style.transform = 'scale(1, 1)';
+        head.textContent = '👀';
+        head.style.transform = 'scale(1, 1)';
+        for (let i = 0; i < spaces.length; i++) { 
+          spaces[i].textContent = '⏪';
+        } 
+      } else if (window.scrollY >= lastScrollY) {
+        sup.textContent = pal.textContent = '👌';
+        sup.style.transform = 'scale(-1, -1)';
+        pal.style.transform = 'scale(1, -1)';
+        head.textContent = '🤠';
+        head.style.transform = 'scale(1, 1)';
+        for (let i = 0; i < spaces.length; i++) { 
+          spaces[i].textContent = '⏬';
+        } 
+      } else {
+        sup.textContent = pal.textContent = '👍';
+        sup.style.transform = 'scale(-1, 1)';
+        pal.style.transform = 'scale(1, 1)';
+        head.textContent = '🙃';
+        head.style.transform = 'scale(1, 1)';
+        for (let i = 0; i < spaces.length; i++) { 
+          spaces[i].textContent = '⏫';
+        } 
+      }
+      
+      lastScrollY = window.scrollY;
+      lastScrollX = window.scrollX;
+    });
+  </script>
+</html>

@@ -1,0 +1,282 @@
+* {    box-sizing: border-box; }
+[hidden] { display: none !important; }
+
+@font-face {
+  font-family: Neon;
+  /* Free with attribution, https://www.behance.net/gallery/55332529/NEONEON-FREE-FONT */
+  src: url(https://cdn.glitch.com/6956048d-53f0-46bf-9350-20e59b1d4f90%2FNeoneon.otf?1549662534200);
+}
+
+html {
+/*   overflow: hidden;
+  height: 100%; */
+}
+
+body {
+  background-image: radial-gradient(#FFE9D2, #F3C5EF);
+  height: 100%;
+  width: 100vw;
+  margin: 0;
+  padding: 0;
+  xoverflow: hidden;
+  text-align: center;
+  --pink: #F23B78;
+  font-family: monospace;
+}
+
+h1 {
+  text-transform: uppercase;
+  font-size: 50px;
+  text-align: center;
+  color: var(--pink);
+  text-shadow: 0 0px 20px, 0 0 0px, 0 0 1em var(--pink), 0 0 0.5em #6f1b37, 0 0 0.1em var(--pink);
+}
+
+h1, .controls {
+  font-family: "Neon", "Helvetica Neue", helvetica, arial, sans-serif;
+  font-weight: normal;
+}
+
+a:link, a:visited {
+  color: var(--pink);
+  font-weight: bold;
+}
+
+hr {
+  height: 3px;
+  width: 40px;
+  box-shadow: none;
+  background: var(--pink);
+  border: none;
+  box-shadow: 0 0px 100px, 0 0 0px, 0 0 0.5em var(--pink);
+  border-radius: 8px;
+}
+
+s {
+  font-style: italic;
+  color: var(--pink);
+  opacity: 0.5;
+}
+
+.splash {
+  padding: 0 20px;
+  font-size: 18px;
+  line-height: 1.5;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+@media screen and (max-width: 500px) {
+  .splash {
+    font-size: 15px;
+  } 
+  .splash h1 {
+    font-size: 40px;
+  }
+  .controls {
+    font-size: 18px;
+    flex-direction: column;
+    display: flex;
+  }
+  .controls span:first-of-type {
+    padding: 14px 0;
+  }
+  .controls input {
+    width: 75px;
+  }
+}
+
+@media screen and (max-width: 350px) {
+  p {
+    margin-top: 0;
+  }
+  .splash {
+    padding: 0 10px;
+    font-size: 14px;
+  } 
+  .splash h1 {
+    font-size: 30px;
+    margin-bottom: 0;
+  }
+  .splash .button {
+    font-size: 16px;
+  }
+}
+
+footer {
+  width: 100%;
+  position: absolute;
+  bottom: 0px;
+  padding: 20px;
+}
+
+/***********
+ * Controls
+ ***********/
+.controls {
+  font-size: 20px;
+}
+
+.button {
+  font-family: inherit;
+  font-size: inherit;
+  text-transform: uppercase;
+  font-weight: bold;
+  letter-spacing: 3px;
+  background: transparent;
+  margin: 0 8px;
+  padding: 6px 12px;
+  color: var(--pink);
+  cursor: pointer;
+  border: 2px solid var(--pink);
+}
+
+.button.active {
+  background: var(--pink);
+  color: white;
+}
+
+.button:hover {
+  text-shadow: 0 0px 10px, 0 0 0px, 0 0 0.5em var(--pink);
+  box-shadow: 0 0px 100px, 0 0 0px, 0 0 0.5em var(--pink);
+}
+
+input[type="file"] {
+  width: 0;
+  height: 0;
+  opacity: 0;
+  cursor: pointer;
+  display: none;
+}
+
+/***********
+ * Neon
+ ***********/
+h1 span {
+  animation: neon linear infinite 2s;
+}
+
+h1 span.alternate {
+  animation-delay: 0.2s; 
+  animation-duration: 3s;
+}
+
+/* Thanks to James Nod.
+ * From: https://codepen.io/nodws/pen/bdjwn. */
+@keyframes neon { 
+  78% {
+    color: inherit;
+    text-shadow: inherit;
+  }
+  79%{
+    color: #fa0054;
+    text-shadow: 0 0px 20px, 0 0 0px #F23B78;
+  }
+  80% {
+    color: #fa0054;
+    text-shadow: 0 0px 20px, 0 0 0px #F23B78;
+  }
+  81% {
+    color: inherit;
+    text-shadow: inherit;
+  }
+  82% {
+    color: #fa0054;
+    text-shadow: 0 0px 20px, 0 0 0px #F23B78;
+  }
+  83% {
+    color: inherit;
+    text-shadow: inherit;
+  }
+  92% {
+    color: #fa0054;
+    text-shadow: 0 0px 20px, 0 0 0px #F23B78;
+  }
+  92.5% {
+    color: inherit;
+    text-shadow: inherit;
+  }
+}
+
+/***********
+ * City SVG
+ ***********/
+#city .line {
+  stroke-width: 1.5;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  mix-blend-mode: multiply;
+}
+
+#background .line {
+  fill: white;
+  stroke: white;
+  fill-opacity: 1 !important;
+  filter: none !important;
+}
+
+path.active {
+  fill-opacity: 1 !important;
+  filter: none !important;
+}
+
+path.inactive {
+  stroke: #ddd;
+  opacity: 0.1;
+  mix-blend-mode: darken;
+}
+
+
+
+/***********
+ * I hate you <input type="range"> a lot.
+ * Thanks to https://codepen.io/seanstopnik/pen/CeLqA for styling help.
+ ***********/
+.range {
+  -webkit-appearance: none;
+  vertical-align: middle;
+  width: 100px;
+  height: 3px;
+  border-radius: 3px;
+  background: var(--pink);
+  outline: none;
+  padding: 0;
+  margin-right: 8px;
+}
+.range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+          appearance: none;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--pink);
+  cursor: pointer;
+}
+.range::-webkit-slider-thumb:hover {
+  transform: scale(1.5);
+  box-shadow: 0 0px 100px, 0 0 0px, 0 0 0.5em var(--pink);
+}
+.range:active::-webkit-slider-thumb {
+  transform: scale(1.5);
+  box-shadow: 0 0px 100px, 0 0 0px, 0 0 0.5em var(--pink);
+}
+::-moz-range-track {
+  background: var(--pink);
+  border: 0;
+}
+.range::-moz-range-thumb {
+  width: 10px;
+  height: 10px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--pink);
+  cursor: pointer;
+}
+.range::-moz-range-thumb:hover {
+  transform: scale(1.5);
+  box-shadow: 0 0px 100px, 0 0 0px, 0 0 0.5em var(--pink);
+}
+.range:active::-moz-range-thumb {
+  transform: scale(1.5);
+  box-shadow: 0 0px 100px, 0 0 0px, 0 0 0.5em var(--pink);
+}

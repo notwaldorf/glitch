@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>WebMIDI examples</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://fonts.googleapis.com/css?family=IBM+Plex+Mono:400,700" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css">
+    <script src="/script.js" defer></script>
+    
+    <!-- Highlight.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.13.1/highlight.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.13.1/styles/github-gist.min.css">
+    
+    <!-- Polyfill -->
+    <script src="https://cwilso.github.io/WebMIDIAPIShim/build/WebMIDIAPI.min.js"></script>
+  </head>  
+  <body>
+    <h1>WebMIDI Examples</h1>
+    <p>
+      The Web MIDI API lets your browser talk to MIDI devices. This page gives you a bunch of copy pasteable snippets
+      for these basic interactions, that I basically collected from one of the below links.
+    </p>
+    <p>
+      <a href="https://webaudio.github.io/web-midi-api/">Spec</a> |
+      <a href="https://developer.mozilla.org/en-US/docs/Web/API/MIDIAccess">MDN</a> |
+      <a href="http://cwilso.github.io/WebMIDIAPIShim/">Polyfill</a> (read the fine print re: its dependencies)
+    </p>
+    
+    <h2>Connecting</h2>
+    
+    <button class="copy" onclick="copy(event)">Copy</button>
+    <pre><code class="js">function connect() {
+  navigator.requestMIDIAccess()
+  .then(
+    (midi) => midiReady(midi),
+    (err) => console.log('Something went wrong', err));
+}
+
+function midiReady(midi) {
+  // Also react to device changes.
+  midi.addEventListener('statechange', (event) => initDevices(event.target));
+  initDevices(midi); // see the next section!
+}
+</code></pre>
+    
+    <h2>Devices</h2>
+    <p>If you have any MIDI devices connected, they will appear here. You can also simulate them
+    if you don't have any, but this depends on OS/what you have installed, so you need to figure it out.</p>
+    <b>Inputs:</b> <select id="selectIn"></select><br>
+    <b>Outputs:</b> <select id="selectOut"></select>
+    
+    <button class="copy" onclick="copy(event)">Copy</button>
+    <pre><code class="js">function initDevices(midi) {
+  // Reset.
+  midiIn = [];
+  midiOut = [];
+  
+  // MIDI devices that send you data.
+  const inputs = midi.inputs.values();
+  for (let input = inputs.next(); input && !input.done; input = inputs.next()) {
+    midiIn.push(input.value);
+  }
+  
+  // MIDI devices that you send data to.
+  const outputs = midi.outputs.values();
+  for (let output = outputs.next(); output && !output.done; output = outputs.next()) {
+    midiOut.push(output.value);
+  }
+  
+  displayDevices();
+  startListening();
+}
+
+
+// Start listening to MIDI messages.
+function startListening() {
+  for (const input of midiIn) {
+    input.addEventListener('midimessage', midiMessageReceived);
+  }
+}</code></pre>    
+    
+    <h2>Listening to messages from an input device</h2>
+    <p>To test this, start mashing on the buttons/keys of a connected input device.</p>
+    <p class="output" id="outputIn"></p>
+    
+    <button class="copy" onclick="copy(event)">Copy</button>
+    <pre><code>function midiMessageReceived(event) {
+  // MIDI commands we care about. See
+  // http://webaudio.github.io/web-midi-api/#a-simple-monophonic-sine-wave-midi-synthesizer.
+  const NOTE_ON = 9;
+  const NOTE_OFF = 8;
+
+  const cmd = event.data[0] >> 4;
+  const pitch = event.data[1];
+  const velocity = (event.data.length > 2) ? event.data[2] : 1;
+  
+  // You can use the timestamp to figure out the duration of each note.
+  const timestamp = Date.now();
+  
+  // Note that not all MIDI controllers send a separate NOTE_OFF command for every NOTE_ON.
+  if (cmd === NOTE_OFF || (cmd === NOTE_ON && velocity === 0)) {
+    console.log(`🎧 from ${event.srcElement.name} note off: pitch:${pitch}, velocity: ${velocity}`);
+  
+    // Complete the note!
+    const note = notesOn.get(pitch);
+    if (note) {
+      console.log(`🎵 pitch:${pitch}, duration:${timestamp - note} ms.`);
+      notesOn.delete(pitch);
+    }
+  } else if (cmd === NOTE_ON) {
+    console.log(`🎧 from ${event.srcElement.name} note off: pitch:${pitch}, velocity: {velocity}`);
+    
+    // One note can only be on at once.
+    notesOn.set(pitch, timestamp);
+  }
+}</code></pre>
+    
+    <h2>Sending a message to an output device</h2>
+    <p>To test this, press one of these buttons and listen to the audio coming out of your output device.</p>
+    <b>Pitch:</b> <input id="inputPitch" value="60"><br>
+    <b>Velocity:</b> <input id="inputVelocity" value="100"><br>
+    <b>Duration:</b> <input id="inputDuration" value="100"> <b>ms.</b><br>
+    <br>
+    <button onclick="sendMidiMessage(inputPitch.value, inputVelocity.value, inputDuration.value)">Send!</button>
+    
+    <button class="copy" onclick="copy(event)">Copy</button>
+    <pre><code>function sendMidiMessage(pitch, velocity, duration) {
+  const NOTE_ON = 0x90;
+  const NOTE_OFF = 0x80;
+  
+  const device = midiOut[selectOut.selectedIndex];
+  const msgOn = [NOTE_ON, pitch, velocity];
+  const msgOff = [NOTE_ON, pitch, velocity];
+  
+  // First send the note on;
+  device.send(msgOn); 
+    
+  // Then send the note off. You can send this separately if you want 
+  // (i.e. when the button is released)
+  device.send(msgOff, Date.now() + duration); 
+}</code></pre>
+    
+    <p class="footer">
+      // made with a 🎹 and 🎧 by <a href="https://twitter.com/notwaldorf">monica</a> who has been
+      copy pasting this code a lot recently.
+    </p>
+    
+    <div class="glitchButton" style="position:fixed;top:20px;right:20px;"></div>
+    <script src="https://button.glitch.me/button.js"></script>
+  </body>
+</html>

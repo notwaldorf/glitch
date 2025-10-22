@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;600&display=swap" rel="stylesheet">
+    
+    <title>🎵🌈</title>
+    
+    <link rel="stylesheet" href="/style.css">
+    <script src="/script.js" defer></script>
+  </head>  
+  <body>
+    <h1>reading <span>notes</span> rainbow</h1>
+    
+    <div class="horizontal toggles">
+      <button class="toggle on" onclick="noteNamesClick(true)">
+        do, re mi
+      </button>
+      <button class="toggle" onclick="noteNamesClick(false)">
+        C, D, E
+      </button>
+    </div>
+
+    <div class="legend horizontal" onclick="legendClick(event)">
+      <button class="do">do</button>
+      <button class="re">re</button>
+      <button class="mi">mi</button>
+      <button class="fa">fa</button>
+      <button class="sol">sol</button>
+      <button class="la">la</button>
+      <button class="si">si</button>
+    </div>
+    
+    <br>
+    
+    <div class="note-scroller">
+      <br>
+      <div class="note-holder"><hr class="dotted"></div>
+      <div class="note-holder"><hr class="dotted"></div>
+      <div class="note-holder"><hr class="dotted"></div>
+
+      <div class="note-holder treble staff-edge">
+        <img alt="image of a treble clef" src="https://cdn.glitch.com/6206ec04-f298-4e12-8aca-55a8cb7df6e1%2Ftreble.png?v=1609905244058">
+        <hr>
+        <hr>
+        <hr>
+        <hr>
+        <hr>
+      </div>
+
+      <div class="note-holder middle"><hr class="dotted"></div>
+
+      <div class="note-holder bass staff-edge">
+        <img alt="image of a bass clef" src="https://cdn.glitch.com/6206ec04-f298-4e12-8aca-55a8cb7df6e1%2Fbass.png?v=1609905241309">
+        <hr>
+        <hr>
+        <hr>
+        <hr>
+        <hr>
+      </div>
+
+      <div class="note-holder"><hr class="dotted"></div>
+      <div class="note-holder"><hr class="dotted"></div>
+      <div class="note-holder"><hr class="dotted"></div>
+      
+    </div>
+    <br>
+    
+    <footer>a <a href="https://glitch.com/edit/#!/reading-notes-rainbow">glitch</a> by <a href="https://twitter.com/notwaldorf">monica</a>
+      whose brain remembers things like this</footer>
+    <br>
+    <br>
+    
+  </body>
+</html>

@@ -1,0 +1,167 @@
+* {box-sizing: border-box}
+[hidden] {display: none !important}
+[disabled] {pointer-events:none; opacity: 0.3}
+
+html, body {
+    margin: 0;
+    height: 100%;
+}
+html {
+  --bg: #FFC1BC;
+  --note-height: 20px;
+}
+
+
+body {
+  margin: 0;
+  background: var(--bg);
+  
+  font-family: "Work Sans", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+  line-height: 1.5;
+  font-size: 18px;
+  position: relative;
+}
+
+.wrapper {
+  padding: 20px;
+  max-width: 800px;
+  margin: 0 auto;
+  padding-top: 60px;
+  text-align: center;
+}
+
+h2 {
+  display: inline-block;
+  text-transform: uppercase;
+  text-decoration: none;
+  font-weight: 700;
+  letter-spacing: 4px;
+  font-size: 14px;
+  margin-bottom: 8px;
+  margin: 0;
+  padding: 0;
+}
+
+a:link, a:visited {
+  color: black;
+  font-weight: 700;
+}
+
+/* Radio group */
+.radios {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 0;
+  margin: 0 auto;
+  margin-bottom: 20px;
+  width: 100%;
+  max-width: 350px;
+  
+}
+
+input[type="radio"] {
+  appearance:none;
+  -webkit-appearance:none;
+  margin:0;
+  opacity: 0;
+  width: 0;
+}
+
+label {
+   appearance:none;
+  -webkit-appearance:none;
+  display: block;
+  padding: 8px 16px;
+  margin: 0;
+  border: 3px solid black;
+  border-right: none;
+  height: 50px;
+  min-width: 100px;
+  cursor: pointer;
+  text-align: center;
+  text-transform: uppercase;
+  font-weight: 700;
+  font-size: 16px;
+  letter-spacing: 1px;
+  flex: 1;
+}
+
+.radios label:first-of-type {
+  border-right: 0;
+}
+.radios label:last-of-type {
+  border-right: 3px solid black;
+}
+button {
+   appearance:none;
+  -webkit-appearance:none;
+  margin: 4px;
+  font-family: inherit;
+  font-size: inherit;
+  background: transparent;
+  border: none;
+}
+
+button.go {
+  background: black;
+  border: none;
+  color: white;
+  text-transform: uppercase;
+  font-size: 30px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  padding: 8px 32px;
+  cursor: pointer;
+  transition: letter-spacing 0.3s ease;
+  margin: 50px 0;
+}
+button.go:hover {
+  letter-spacing: 10px;
+}
+
+footer {
+  text-align: center;
+  font-size: 14px;
+
+}
+footer.absolute {
+  position: absolute;
+  bottom: 10px;
+  left: 0;
+  right: 0;
+  opacity: 0.5;
+}
+
+button.hint {
+  background: black;
+  border: none;
+  color: white;
+  text-transform: uppercase;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  padding: 8px 32px;
+  cursor: pointer;
+  transition: letter-spacing 0.3s ease;
+}
+button.hint:hover {
+  letter-spacing: 10px;
+}
+
+
+@media only screen and (max-width: 620px) {
+/*   .wrapper {
+    margin: 0;
+  } */
+  h1 {
+    display: block;
+    letter-spacing: 0;
+  }
+  .optional-br {
+    display: block;
+  }
+}

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>inktober experiment</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="style.css">
+    <script src="sheriff.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@magenta/music@1.1.5"></script>
+    <style>
+    </style>
+  </head>
+  <body>
+    <h1>#inktober: an experiment</h1>
+    <div id="wrapper" class="an-art" title="I'm starting with the 'I'm the sheriff of circle-punch', and adding a feature every day. To see the previous days, look at the Glitch code or go to howthee.glitch.me/day-x.html.">
+      <pre id="output"></pre>
+    </div>
+    <div class="an-art-label">
+      <button class="action" onclick="window.location = `https://howthee.glitch.me/day-${today-1}.html`">🔙</button>
+      <div>
+        <b>Day 16</b>: What Does a Sheriff Sound Like? <br>
+      </div>
+      <button class="action" onclick="window.location = `https://howthee.glitch.me/day-${today+1}.html`">🔜</button>
+    </div>
+    <div class="an-art-help">
+      <div style="text-align:center">
+        <button onclick="playOrPause()">Hear sheriff</button>
+        <button id="cont" onclick="continueSheriff()" disabled>Continue sheriff using MusicRNN</button>
+      </div>
+      <hr>
+      <p>This demo uses Magenta's <a href="https://github.com/tensorflow/magenta-js/tree/master/music#musicrnn">Music RNN</a>,
+        which is an LSTM-based model for musical notes -- it's really good at continuing a sequence of notes. In this example, 
+        I'm taking every row of the sheriff to be a drum sound, and every column 
+        to be a time step. That way, I can get a little note sequence that represents what the sheriff "sounds" like,
+        and then I can ask the model to continue it, and give me a <i>new</i> sequence to listen to.
+      </p>
+    </div>
+
+    <footer>
+      <hr>
+      <h3>a weird art experiment by <a href="https://twitter.com/notwaldorf">monica</a></h3>
+    </footer>
+    <div class="glitchButton" style="position:fixed;top:20px;right:20px;"></div>
+    <script src="https://button.glitch.me/button.js"></script>
+  </body>
+  <script>
+    const today = 16;
+    output.innerHTML = getSheriff('🤖');
+    const music_rnn = new mm.MusicRNN('https://storage.googleapis.com/magentadata/js/checkpoints/music_rnn/drum_kit_rnn');
+    music_rnn.initialize().then(() => {
+      cont.disabled = false;
+    });
+   
+    const seq = sheriffToSequence();
+    const player = new mm.SoundFontPlayer('https://storage.googleapis.com/magentadata/js/soundfonts/sgm_plus');
+    player.loadSamples(seq);
+    
+    function playOrPause() {
+      if (player.isPlaying()) {
+        player.stop();
+      } else {
+        mm.Player.tone.context.resume();
+        player.start(seq);
+      }
+    }
+    
+    async function continueSheriff() {
+      const sample = await music_rnn.continueSequence(seq, 14, 1.1);
+      mm.Player.tone.context.resume();
+      player.start(sample);
+    }
+  </script>
+</html>

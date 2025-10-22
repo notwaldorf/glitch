@@ -1,0 +1,31 @@
+/* CSS files add styling rules to your content */
+
+* { box-sizing: border-box; }
+
+body {
+  font-family: 'IBM Plex Mono', monospace;
+  padding: 2em;
+  width: 100%;
+  max-width: 600px; 
+}
+
+h1 {
+  font-style: italic;
+  color: #FF1644;
+}
+
+p {
+  line-height: 1.5;
+}
+
+a {
+  color: inherit;
+  font-style: italic;
+  text-decoration: none;
+  border-bottom: 3px solid #FF80AB;
+}
+
+footer {
+  margin-top: 40px;
+  border-top: 3px solid #577eec;
+}

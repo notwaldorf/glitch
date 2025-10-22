@@ -1,0 +1,147 @@
+* { box-sizing: border-box; }
+@font-face {
+  font-family: Neon;
+  /* Free with attribution, https://www.behance.net/gallery/55332529/NEONEON-FREE-FONT */
+  src: url(https://cdn.glitch.com/6956048d-53f0-46bf-9350-20e59b1d4f90%2FNeoneon.otf?1549662534200);
+}
+html {
+  --size-base: 12vh;
+  --border: 10px;
+  --blur: 5px;
+  --shadow: rgba(117, 16, 16, 0.3);
+  --top: hotpink; //#E1E1E1;
+  --bottom: hotpink; //#B4B4B5;
+}
+body {
+  font-family: "Benton Sans", "Helvetica Neue", helvetica, arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  background: var(--top);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  perspective: 1000px;
+}
+body:after {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  background: red;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 20vh;
+  background: var(--bottom);
+  box-shadow: inset 2px 8px 10px -10px #000; 
+}
+h1 {
+  text-transform: uppercase;
+  font-size: 50px;
+  padding-bottom: 40px;
+  text-align: center;
+  color: white;
+  text-shadow: 0 0px 20px, 0 0 0px, 0 0 1em white, 0 0 0.5em #6f1b37, 0 0 0.1em white;
+  font-family: "Neon", "Helvetica Neue", helvetica, arial, sans-serif;
+  font-weight: normal;
+}
+h1 span {
+  animation: neon linear infinite 2s;
+}
+h1 span.a {
+  animation-delay: 0.2s; 
+  animation-duration: 3s;
+}
+.container {
+  position: relative;
+  width: calc(var(--size-base) * 3);
+  height: calc(var(--size-base) * 4);
+  margin-bottom: 17vh;
+  perspective: 1000px;
+  transform: rotateX(10deg);
+}
+
+.frame {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: white;
+  border: var(--border) solid black;
+  border-color: #434040 black black #4F4C4C;
+}
+
+.shadow {
+  content:'';
+  position: absolute;
+  z-index: -1; 
+  top: 0;
+  right: -80px;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: calc(var(--size-base) * 4 - 3vh - var(--border)) 0 3vh 80px;
+  border-color: transparent transparent transparent var(--shadow);
+  filter: blur(6px);
+  transform: none;
+}
+
+#canvas-container {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+/* Thanks to James Nod.
+ * From: https://codepen.io/nodws/pen/bdjwn. */
+@keyframes neon { 
+  78% {
+    color: inherit;
+    text-shadow: inherit;
+  }
+  79%{
+    color: #fa0054;
+    text-shadow: 0 0px 20px, 0 0 0px #F23B78;
+  }
+  80% {
+    color: #fa0054;
+    text-shadow: 0 0px 20px, 0 0 0px #F23B78;
+  }
+  81% {
+    color: inherit;
+    text-shadow: inherit;
+  }
+  82% {
+    color: #fa0054;
+    text-shadow: 0 0px 20px, 0 0 0px #F23B78;
+  }
+  83% {
+    color: inherit;
+    text-shadow: inherit;
+  }
+  92% {
+    color: #fa0054;
+    text-shadow: 0 0px 20px, 0 0 0px #F23B78;
+  }
+  92.5% {
+    color: inherit;
+    text-shadow: inherit;
+  }
+}    
+  
+#button {
+  display: inline-block;
+  background: transparent;
+  border: none;
+  margin: 0;
+  padding: 0;
+  text-decoration: none;
+  color: inherit;
+  font-family: inherit;
+  font-size: inherit;
+  cursor: pointer;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}

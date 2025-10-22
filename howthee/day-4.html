@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>inktober experiment</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="style.css">
+    <script src="sheriff.js"></script>
+    <style>
+      #output { background: transparent; box-shadow: none;}
+    </style>
+  </head>
+  <body>
+    <h1>#inktober: an experiment</h1>
+    <div class="an-art" title="I'm starting with the 'I'm the sheriff of circle-punch', and adding a feature every day. To see the previous days, look at the Glitch code or go to howthee.glitch.me/day-x.html.">
+      <pre class="fake-output">
+        <h2>If there's no sheriff in town <br>then it's you.</h2>
+      </pre>
+    </div>
+    <div class="an-art-label">
+      <button class="action" onclick="window.location = `https://howthee.glitch.me/day-${today-1}.html`">🔙</button>
+      <div>
+        <b>Day 4</b>: Move.
+      </div>
+      <button class="action" onclick="window.location = `https://howthee.glitch.me/day-${today+1}.html`">🔜</button>
+    </div>
+
+    <footer>
+      <hr>
+      <h3>a weird art experiment by <a href="https://twitter.com/notwaldorf">monica</a></h3>
+    </footer>
+    <div class="glitchButton" style="position:fixed;top:20px;right:20px;"></div>
+    <script src="https://button.glitch.me/button.js"></script>
+  </body>
+  <script>
+    const today = 4;
+
+    // Set up the body.
+    const queryParam = decodeURIComponent(window.location.hash.substr(1));
+    let x;
+    if (queryParam.length === 0) {
+      x = '🚫';
+    } else {
+      x = queryParam;
+    }
+
+    // Set up the cursor.
+    document.body.style.cursor = document.body.parentNode.style.cursor = 'none';
+    const theSheriff = document.createElement('div');
+    theSheriff.innerHTML = `<pre id="output"><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>🤠</span>
+<span>&nbsp;</span><span>&nbsp;</span><span>${x}</span><span>${x}</span><span>${x}</span>
+<span>&nbsp;</span><span>${x}</span><span>&nbsp;</span><span>${x}</span><span>&nbsp;</span><span>${x}</span>
+<span id="sup">✌</span><span>&nbsp;</span><span>${x}</span><span>${x}</span><span>&nbsp;</span><span>&nbsp;</span><span id="pal">✌</span>
+<span>&nbsp;</span><span>&nbsp;</span><span>${x}</span><span>&nbsp;</span><span>${x}</span>
+<span>&nbsp;</span><span>&nbsp;</span><span>${x}</span><span>&nbsp;</span><span>&nbsp;</span><span>${x}</span>
+<span>&nbsp;</span><span>&nbsp;</span><span>👢</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>👢</span></pre>`;
+    theSheriff.style.fontSize = '30px';
+    theSheriff.style.position = 'absolute';
+    theSheriff.style.zIndex = 9999;
+    theSheriff.style.pointerEvents = 'none';
+    document.body.appendChild(theSheriff);
+
+    let count = 0;
+    window.addEventListener('mousemove', function(event) {
+      theSheriff.style.left = event.pageX + 'px';
+      theSheriff.style.top = event.pageY + 'px';
+
+      const clone = theSheriff.cloneNode(true);
+      clone.classList.add('clone');
+      clone.id = count;
+      document.body.appendChild(clone);
+      count++;
+
+      // Get all the clones.
+      let clones = document.querySelectorAll('.clone');
+
+      const clonesToLeave = 40;
+      const clonesToDelete = clones.length - clonesToLeave;
+      for (let i = 0; i < clones.length; i++) {
+        // Only leave 20 clones behind.
+        if (i <= clonesToDelete) {
+          document.body.removeChild(clones[i]);
+        } else {
+          // Fade out the other clones.
+          clones[i].style.opacity = (i - clonesToDelete) / clonesToLeave;
+        }
+      }
+    });
+  </script>
+</html>

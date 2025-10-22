@@ -1,0 +1,293 @@
+* {box-sizing: border-box}
+[hidden] {display: none !important}
+[disabled] {pointer-events:none; opacity: 0.3}
+.horizontal {display: flex; flex-direction: row; justify-content: space-between}
+.vertical {display: flex; flex-direction: column}
+.center {justify-content: center; align-items: center}
+.flex {flex: 1}
+
+html {
+  --spacing-xs: 8px;
+  --spacing: 24px;
+  --spacing-s: 12px;
+  --spacing-m: 36px;
+  
+  --bg: #EBEBEB;
+  --fg: #222222;
+}
+
+body {
+  font-family: 'Rubik', sans-serif;
+  padding: 2em;
+  background: var(--bg);
+  max-width: 800px;
+  margin: 0 auto;
+  line-height: 1.5;
+  position: relative;
+  height: 90vh;
+  
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+a:link, a:visited {
+  color: var(--fg);
+  font-weight: bold;
+}
+h1, h3 {
+  text-align: center;
+  font-weight: 500;
+}
+
+h3 {
+  margin-top: var(--spacing-xs);
+  margin-bottom: 0;
+}
+
+.controls, .main {
+  margin: var(--spacing) 0;
+}
+
+.main, .settings {
+  flex: 1;
+}
+.tiny {
+  text-align: center;
+  font-size: 13px;
+  letter-spacing: 0;
+}
+
+input[type="number"], button {
+  border: none;
+  background: transparent;
+  font-family: inherit;
+  font-size: 30px;
+}
+
+input[type="number"]:focus, button:focus {
+  background: white;
+  outline:none;
+  border-color: hotpink !important;
+}
+input[type="checkbox"]:focus {
+  outline: 1px solid hotpink;
+  outline-offset: 1px;
+}
+button.icon-button:focus {
+  outline: 3px solid hotpink;
+}
+input[type="number"] {
+  width: 100px;
+  text-align: center;
+  color: inherit;
+  border: none;
+  box-shadow: none;
+  border-bottom: 3px solid var(--fg);
+  border-radius: 0;
+  padding: 0;
+}
+
+button {
+  border: 3px solid var(--fg);
+  color: var(--fg);
+  border-radius: 3px;
+  padding: var(--spacing-xs) var(--spacing);
+  margin: 0 var(--spacing);
+  cursor: pointer;
+  min-width: 120px;
+}
+
+button.icon-button {
+  border: none;
+  min-width: 20px;
+  margin: 0;
+  padding: 8px;
+}
+
+.track {
+  text-transform: uppercase;
+  max-width: 400px;
+  margin: 0 auto;
+  position: relative;
+  margin-top: var(--spacing-m);
+}
+.track::before {
+  display: block;
+  content: '';
+  height: 4px;
+  left: 4px;
+  width: calc(100% - 8px);
+  background: var(--fg);
+  position: absolute;
+  top: 50%;
+}
+
+.track > div {
+  position: relative;
+}
+
+.track .bubble {
+  width: 60px;
+  height: 60px;
+  
+  border: 4px solid var(--fg);
+  border-radius: 50%;
+  background: white;
+  color: var(--fg);
+  padding: var(--spacing);
+  
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  z-index: 2;
+}
+.track > div.current uke-bar {
+  --cell-on-color: hotpink;
+}
+.track > div.current .bubble {
+  background: hotpink;
+  border-color: hot-pink;
+  transform: scale(1.2);
+  color: white;
+}
+.track > div.current span:after{
+  display:none;
+}
+
+uke-bar {
+  background: white;
+  color: var(--fg);
+  position: absolute;
+  top: 100%;
+  left: -20%;
+}
+
+.track.no-shapes uke-bar {
+  display: none;
+}
+
+label {
+  display: block;
+}
+label.inline {
+  display: inline-block;
+}
+
+
+/* 
+ * Dropdowns
+ */
+select {
+  opacity: 0;
+  border: none;
+  display: block;
+  background: transparent;
+  font-family: inherit;
+  position: absolute;
+  
+  /* wide hit target */
+  width: 140%;
+  height: 140%;
+  left: -20%;
+  top: -20%;
+}
+
+label.select {
+  font-size: 40px;
+  position: relative;
+  width: 50px;
+  height: 50px;
+  text-transform: none;
+  cursor: pointer;
+}
+
+select:focus ~ span {
+  outline: 3px solid hotpink;
+}
+
+label.select > span {
+  display: block;
+  width: 50px;
+  text-align: center;
+  line-height: 1.3;
+}
+
+label.select > span:after {
+  content: '▾';
+  left: 40%;
+  position: absolute;
+  font-size: 20px;
+  bottom: -8px;
+  pointer-events: none;
+}
+
+label.select span.current {
+  color: hotpink;
+}
+
+label.select span.small {
+  font-size: 30px;
+  line-height: 1.6;
+  letter-spacing -4px;
+}
+
+label.select.pattern {
+  text-align: center;
+  width: 100%; 
+  margin: 0 auto;
+  margin-top: var(--spacing);
+}
+label.select.pattern select:focus ~ span {
+  background: white;
+}
+label.select.pattern > span, label.select.pattern select {
+  font-size: 30px;
+  width:100%;
+}
+
+label.select.pattern > span:after {
+  margin-left: var(--spacing);
+  position: relative;
+  left: 0;
+  bottom: 0;
+}
+
+/* label.select span.current.up {
+  color: blue;
+} */
+
+.settings {
+  line-height: 2;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+@media screen and (max-width: 420px) {
+  body {
+    padding: 1em;
+  }
+  uke-bar {
+    --cell-width: 24px;
+    --cell-on-width: 16px;
+    left: -10px;
+  }
+  
+  label.select.pattern span {
+    font-size: 28px;
+  }
+  .strumming-help, .picking-help {
+    font-size: 14px !important;
+  }
+}
+
+@media screen and (max-width: 330px) {
+  uke-bar {
+    --cell-width: 20px;
+    --cell-on-width: 16px;
+    left: 0;
+  }
+  label.select.pattern span {
+    font-size: 24px;
+  }
+}

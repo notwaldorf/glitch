@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="https://glitch.com/favicon.ico" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@100..900&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./common.css" />
+
+    <title>What note comes next?</title>
+    <style>
+      body {
+        background: #f6f6f2;
+        color: #2d384c;
+      }
+      h1 {
+        font-weight: 600;
+      }
+      .question {
+        font-size: 30px;
+        font-weight: 600;
+        margin: 0;
+
+        position: absolute;
+        top: 120px;
+        left: 100px;
+        width: 160px;
+      }
+      .question .when {
+        font-weight: 800;
+      }
+      .question .what {
+        border-top: 3px solid #2d384c;
+        font-size: 34px;
+        font-weight: 600;
+        text-transform: uppercase;
+      }
+
+      .wheel-container {
+        width: 360px;
+        height: 360px;
+        position: relative;
+        margin: 20px auto;
+      }
+      button.note {
+        appearance: none;
+        -webkit-appearance: none;
+        font-family: inherit;
+        text-transform: uppercase;
+        font-weight: 700;
+
+        margin: 0;
+        padding: 0;
+        position: absolute;
+        width: 60px;
+        height: 60px;
+
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 20px;
+
+        border: 3px solid #2d384c;
+        color: #2d384c;
+
+        cursor: pointer;
+        transition: transform 0.3s ease;
+      }
+
+      button.note.nope {
+        border-color: red;
+        color: red;
+      }
+      button.note.yup {
+        background: #ffe377;
+      }
+    
+      input[type="radio"]:checked + label {
+        background: black;
+        color: white;
+        
+      }
+      label {
+        min-width: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrapper">
+      <h1>What note comes next?</h1>
+
+      <div class="wheel-container" hidden>
+        <div class="question">
+          <div class="top">
+            <span class="howmany">1</span>
+            <span class="when">before</span>
+          </div>
+          <div class="what">B</div>
+        </div>
+        <div class="notes-container">
+        </div>
+      </div>
+      
+      <button onclick="justTellMe()" class="hint" hidden>ugh just tell me</button>
+      
+      <div class="instructions">
+        <div>
+          Maximum number of notes to guess <br> on either side of the note
+        </div>
+        <div class="radios offset">
+          <input type="radio" name="offset" id="offset1" checked>
+          <label for="offset1">
+            1
+          </label>
+
+          <input type="radio" name="offset" id="offset2">
+          <label for="offset2">
+            2
+          </label>
+
+          <input type="radio" name="offset" id="offset3">
+          <label for="offset3">
+            3
+          </label>
+          
+          <input type="radio" name="offset" id="offset4">
+          <label for="offset4">
+            4
+          </label>
+        </div>
+
+        <div class="radios">
+          <input type="radio" name="names" id="doremi">
+          <label for="doremi">
+            do, re, mi
+          </label>
+
+          <input type="radio" name="names" id="abc" checked>
+          <label for="abc">
+            A, B, C
+          </label>
+        </div>
+
+        <button class="go">i'm ready!</button>
+      </div>
+    </div>
+
+    <footer class="absolute">
+      Made by <a href="https://meowni.ca">Monica</a> who didn't grow up with
+      note names in English. See other <a href="https://music-morsels.glitch.me/">music morsels</a>.
+    </footer>
+  </body>
+  <script>
+    const NOTES = {
+      letters: ["a", "b", "c", "d", "e", "f", "g"],
+      solfege: ["la", "si", "do", "re", "mi", "fa", "sol"],
+    }
+    
+    const AFTER = {
+      letters: ["b", "c", "d", "e", "f", "g", "a"],
+      solfege: ["si", "do", "re", "mi", "fa", "sol", "la"]
+    }
+      
+    const BEFORE = {
+      letters: ["g", "a", "b", "c", "d", "e", "f"],
+      solfege: ["sol", "la", "si", "do", "re", "mi", "fa"],
+    }
+    
+    let answer, direction, kind, offset = 1;
+    
+    document.querySelector('button.go').addEventListener('click', () => {
+      document.querySelector('.instructions').hidden = true;
+      document.querySelector('.wheel-container').hidden = false;
+      document.querySelector('.hint').hidden = false;
+      kind = document.querySelector("#doremi").checked ? "solfege" : "letters"
+      const offsetText = document.querySelector(".radios.offset :checked").id
+      offset = parseInt(offsetText.replace('offset', ''))
+      console.log(`notes: ${kind}, offset: ${offset}`)
+      
+      next()
+    })
+
+    function makeWheel() {
+      const wheel = document.querySelector('.notes-container');
+      const totalLetters = NOTES[kind].length;
+      const radius = 140; // Adjust this to change the size of the wheel
+
+      const shuffled = shuffleArray(NOTES[kind]);
+      wheel.innerHTML = '';
+      shuffled.forEach((note, index) => {
+        //const angle = (index / totalLetters) * 2 * Math.PI;
+        const angle = ((index / totalLetters) * 2 * Math.PI) - (Math.PI / 2);
+        const x = radius * Math.cos(angle) + radius;
+        const y = radius * Math.sin(angle) + radius;
+
+        const el = document.createElement('button');
+        el.className = 'note';
+        el.dataset.note = note;
+        el.textContent = note;
+        el.style.left = `${x}px`;
+        el.style.top = `${y}px`;
+        el.addEventListener('click', checkAnswer)
+
+        wheel.appendChild(el);
+      });
+    }
+
+
+    function next() {
+      // Reset the test.
+      const bs = document.querySelectorAll("button.note");
+      bs.forEach((b) => {
+        b.classList.remove("nope");
+        b.classList.remove("yup");
+        b.disabled = false;
+      });
+      
+      makeWheel();
+
+      // Before or after?
+      const randomBit = Math.round(Math.random());
+      const howmany = Math.floor(Math.random()*offset+1);
+      
+      direction = randomBit == 0 ? "after" : "before";
+      document.querySelector(".when").textContent = direction;
+      document.querySelector(".howmany").textContent = howmany;
+
+      // Pick the note.
+      const index = Math.floor(Math.random() * NOTES[kind].length);
+      document.querySelector(".what").textContent = NOTES[kind][index];
+
+      answer = getAnswer(index, howmany)
+      console.log(`${howmany} ${direction} ${NOTES[kind][index]} = ${answer}`);
+    }
+
+    function getAnswer(noteIndex, howmany) {
+      let currentIndex = noteIndex;
+      let oneOff;
+      for (let i = 0; i < howmany; i++) {
+        oneOff = direction == "after" ? 
+          AFTER[kind][currentIndex]:
+          BEFORE[kind][currentIndex];
+        currentIndex = NOTES[kind].indexOf(oneOff)
+      }
+      return oneOff
+    }
+    
+    function checkAnswer(event) {
+      const el = event.target;
+      const guess = el.dataset.note;
+
+      if (guess == answer) {
+        next();
+      } else {
+        el.classList.add("nope");
+        el.disabled = true;
+      }
+    }
+
+    function shuffleArray(array) {
+        // Create a copy of the original array
+        const newArray = [...array];
+
+        for (let i = newArray.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+        }
+
+        return newArray;
+    }
+    
+    function justTellMe() {
+      const el = document.querySelector(`button[data-note="${answer[0]}"]`);
+      el.classList.add('yup')
+    }    
+  </script>
+</html>

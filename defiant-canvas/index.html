@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>👋🙀💕</title>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://fonts.googleapis.com/css?family=IBM+Plex+Mono:600,600i,700" rel="stylesheet">
+
+  <script type="module" src="./a-box.js"></script>
+
+  <!-- emoji rain -->
+  <link rel="import" async href="https://meowni.ca/elements/emoji-rain.html">
+  <style>
+    *, *:after, *:before {
+      box-sizing: border-box;
+    }
+    @font-face {
+      font-family: TrashHand;
+      src: url(https://cdn.glitch.com/f7f2bc44-a821-4c39-81a2-8f39f455c63d%2FTrashHand.TTF?1536204305599);
+    }
+    .xoxo {
+      font-family: TrashHand;
+    }
+    b {
+      font-weigth: 900;
+    }
+    body {
+      background: #BFFFE9;
+      font-family: 'IBM Plex Mono', monospace;
+      font-weight: 600;
+      color: white;
+      
+      --pink: #FE61A8;
+      --pink-light: #F0D6E9;
+      --blue: #55DDF6;
+      --blue-dark: #314E96;
+      --yellow: #FFEE58;
+      --orange: #FFC107;
+      --purple: #7D91E6;
+      --green: #60F0B3;
+      --coral: #F1AEA2;
+      -webkit-overflow-scrolling: touch;
+      -webkit-font-smoothing: antialiased;
+      height: 100vh;
+      width: 100vw;
+      overflow: hidden;
+    }
+
+    iframe {
+      height: 100%;
+      width: 100%;
+      border: 0;
+    }
+
+    .circle {
+      position: absolute;
+      display: inline-block;
+      width: 20vw;
+      height: 20vw;
+      background: repeating-linear-gradient( 45deg, transparent 24px, transparent 29px, white 3px, white 38px);
+      opacity: 0.8;
+      background-size: 100% 100%;
+      border-radius: 50%;
+      z-index: -100;
+    }
+    .circle.green {
+      background: repeating-linear-gradient( 125deg, transparent 24px, transparent 29px, var(--green) 3px, var(--green) 38px);
+    }
+
+    #wall {
+      display: flex;
+      flex-wrap: wrap;
+      padding: 4vw 24vh;
+    }
+    img {
+      max-width: 40%;
+    }
+    emoji-rain {
+      top: 0;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="circle" style="left:1vw"></div>
+  <div class="circle" style="left:60vw;top:10vh"></div>
+  <div class="circle" style="width:10vw;height:10vw;left:50vw;top:50vh"></div>
+  <div class="circle" style="width:40vw;height:40vw;right:-10vw"></div>
+  <div class="circle" style="width:25vw;height:25vw;left:20vw;top:60vh"></div>
+
+  <div id="wall"></div>
+</body>
+
+<script>
+  let currentSlide = 0;
+  let rainmaker;
+
+  fetch('slides.json').then((response) => response.json()).then((slides) => {
+    for (let i = 0; i < slides.length; i++) {
+      const slide = slides[i];
+      const box = document.createElement('a-box');
+      box.dataset.id = i;
+      box.setAttribute('right', randomPanel());
+      box.setAttribute('bottom', randomPanel());
+      box.setAttribute('bg', randomBackground());
+      
+      if (slide.fit || slide.iframe) {
+        box.setAttribute('fit', true);
+      }
+      
+      if (slide.iframe) {  
+        const frame = document.createElement('div');
+        frame.classList.add('glitch-frame');
+        frame.innerHTML = `
+          <iframe src="${slide.iframe}" alt="${slide.title}"></iframe>
+        `;
+        box.appendChild(frame);
+      } else if (slide.video) {
+        if (slide.pretitle) box.appendChild(makeDiv('pretitle', slide.pretitle));
+        const video = document.createElement('video');
+        video.setAttribute('controls', 'controls');
+        video.src = slide.video;
+        box.appendChild(video);
+      } else {
+        const bonus = slide.xoxo ? ' xoxo' : '';
+        if (slide.pretitle) box.appendChild(makeDiv(`pretitle${bonus}`, slide.pretitle));
+        if (slide.title) box.appendChild(makeDiv(`title${bonus}`, slide.title));
+        if (slide.subtitle) box.appendChild(makeDiv(`subtitle${bonus}`, slide.subtitle));
+        if (slide.img) {
+          const img = document.createElement('img');
+          img.src = slide.img;
+          if (slide.bigImage) {
+            img.style.maxWidth = "100%"
+          }
+          box.appendChild(img);
+        }
+      }
+      if (slide.split) {
+        box.setAttribute('split', true);
+      }
+      wall.appendChild(box);
+      randomlyMove(box);
+      
+      // Open the instruction.
+      maybeOpenBox();
+    }
+  });
+
+  document.addEventListener('click', (event) => {
+    if (event.target.localName === 'body' || event.target.localName === 'html') {
+      maybeCloseOpenBox();
+    }
+  });
+
+  document.addEventListener('new-slide', (event) => {
+    currentSlide = parseInt(event.detail.which);
+  });
+
+  document.body.addEventListener('keydown', (event) => {
+    // No i'm not wrapping it into a switch statement you wrap it 
+    // in a switch statement. Whatever. Have you seen the state of
+    // this code? I'm not wrapping anything.
+    if (event.keyCode == 27) { // escape
+      maybeCloseOpenBox();
+      event.preventDefault();
+    } else if (event.keyCode == 39) {  // right arrow
+      event.preventDefault();
+      maybeCloseOpenBox();
+      currentSlide++;
+      maybeOpenBox();
+    } else if (event.keyCode == 37) {  // left arrow
+      event.preventDefault();
+      maybeCloseOpenBox();
+      currentSlide--;
+      maybeOpenBox();
+    } else if (event.keyCode == 49) { // 1
+      event.preventDefault();
+      maybeCloseOpenBox();
+      currentSlide = 0;
+      maybeOpenBox();
+    } else if (event.keyCode == 50) { // 2
+      event.preventDefault();
+      maybeCloseOpenBox();
+      maybeOpenBox();
+    } else if (event.keyCode == 65) { // a
+      rainmaker = document.createElement('emoji-rain');
+      document.body.appendChild(rainmaker);
+      rainmaker.style.zIndex = 200;
+      rainmaker.start();
+    } else if (event.keyCode == 83) { // x
+      rainmaker.style.zIndex = -1;
+      rainmaker.stop();
+      document.body.removeChild('rainmaker');
+    }
+  });
+
+  function maybeOpenBox() {
+    if (currentSlide < 0) {
+      currentSlide = 0;
+      return;
+    } else {
+      const open = document.querySelector(`a-box[data-id="${currentSlide}"]`);
+      if (open) open.setAttribute('expand', true);
+    }
+  }
+
+  function maybeCloseOpenBox() {
+    const open = document.querySelector('a-box[expand]');
+    if (open)
+      open.removeAttribute('expand');
+  }
+
+  function makeDiv(className, text) {
+    const div = document.createElement('div');
+    div.innerHTML = text;
+    //div.classList.add(className);
+    div.className += className;
+    return div;
+  }
+
+  function randomBackground(i) {
+    const list = ['bg-pink', 'bg-pink-light', 'bg-coral', 'bg-blue',
+      'bg-yellow', 'bg-orange', 'bg-purple', 'bg-green',
+    ];
+    return list[randi(list.length)];
+  }
+
+  function randomPanel() {
+    const list = ['bg-pink', 'bg-pink-light', 'bg-coral', 'bg-blue',
+      'bg-blue-dark', 'bg-yellow', 'bg-orange', 'bg-purple', 'bg-green',
+      // make the fancy ones more likely.
+      'dots', 'dots2', 'dashes', 'dashes2',
+      'dots', 'dots2', 'dashes', 'dashes2'];
+    return list[randi(list.length)];
+  }
+
+  function randomlyMove(box) {
+    const size = box.getBoundingClientRect().width || 200;
+    let wiggle;
+    if (randi(2)) {
+      box.style.left = -randi(100) + 'px';
+      box.style.top = -randi(100) + 'px';
+      wiggle = 0 - randi(30, 10);
+    } else {
+      box.style.left = randi(100) + 'px';
+      box.style.top = randi(100) + 'px';
+      wiggle = randi(30, 10);
+    }
+  }
+
+  function randi(b, a = 0) {
+    return Math.floor(Math.random() * (b - a) + a);
+  }
+</script>
+
+</html>

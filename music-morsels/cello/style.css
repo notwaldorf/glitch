@@ -1,0 +1,163 @@
+:root {
+  --color-bg: white;
+  --color-text-main: #000000;
+  --color-text-header: #2800ff;
+  --color-primary: #edf2fa;
+  --wrapper-height: 87vh;
+  --font-family: "HK Grotesk";
+}
+
+* {
+  box-sizing: border-box;
+}
+[hidden] {
+  display: none !important;
+}
+
+/* Import fonts */
+@font-face {
+  font-family: HK Grotesk;
+  src: url("https://cdn.glitch.me/605e2a51-d45f-4d87-a285-9410ad350515%2FHKGrotesk-Regular.otf?v=1603136326027")
+    format("opentype");
+}
+@font-face {
+  font-family: HK Grotesk;
+  font-weight: bold;
+  src: url("https://cdn.glitch.me/605e2a51-d45f-4d87-a285-9410ad350515%2FHKGrotesk-Bold.otf?v=1603136323437")
+    format("opentype");
+}
+
+body {
+  font-family: HK Grotesk;
+  background-color: var(--color-bg);
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+  touch-action: manipulation;
+}
+
+/* Page structure */
+.wrapper {
+  width: 100%;
+  max-width: 500px;
+  padding: 20px;
+  margin: 0 auto;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  overflow: hidden;
+}
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+button {
+  font-family: inherit;
+  font-size: 100%;
+  background: #ffffff;
+  border: 1px solid #000000;
+  box-sizing: border-box;
+  border-radius: 4px;
+  padding: 0.5rem 1rem;
+  transition: 500ms;
+  margin: 10px;
+  cursor: pointer;
+  color: inherit;
+}
+
+button.active {
+  background: var(--color-text-header);
+  color: white;
+}
+
+h2 {
+  color: var(--color-text-header);
+  text-align: center;
+}
+
+#staff {
+  text-align: center;
+}
+
+svg {
+  width: 150px;
+  height: 110px;
+}
+
+#container {
+  position: relative;
+}
+#strings {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  width: 100%;
+  z-index: -1;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  
+  border-bottom: 6px solid black;
+}
+#strings > div {
+  height: 100%;
+  width: 2px;
+  background: black;
+}
+#cello {
+  display: grid;
+  grid-template-columns: repeat(4, 50px);
+  grid-template-rows: repeat(5, 1fr);
+  grid-column-gap: 8px;
+  grid-row-gap: 8px;
+  margin: 0 auto;
+  transform: rotate(180deg);
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
+#cello > div {
+  border-radius: 50%;
+  background: var(--color-primary);
+  height: 50px;
+  width: 50px;
+  text-align: center;
+  line-height: 50px;
+  transform: rotate(180deg);
+}
+
+#cello > div.open {
+  background: white;
+  height: 30px;
+  width: 30px;
+  line-height: 30px;
+  margin: 10px;
+}
+
+#cello > div.active {
+  background: var(--color-text-header);
+  color: white;
+}
+/* #cello > div.open.active {
+  border-color: var(--color-text-header);
+  background: transparent;
+  color: black;
+} */
+
+.horizontal {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+@media only screen and (max-width: 390px) {
+  .wrapper {
+    padding: 0
+  }
+}
