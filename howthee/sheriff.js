@@ -97,9 +97,9 @@ function sheriffToSequence() {
 window.onload = () => { 
   document.body.addEventListener('keydown', (event) => {
     if (event.keyCode === 37) { // left
-      window.location = `https://howthee.glitch.me/day-${today-1}.html`
+      window.location = `./day-${today-1}.html`
     } else if (event.keyCode === 39) {  // right
-      window.location = `https://howthee.glitch.me/day-${today+1}.html`
+      window.location = `./day-${today+1}.html`
     }
   });
 }
