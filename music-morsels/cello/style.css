@@ -4,7 +4,6 @@
   --color-text-header: #2800ff;
   --color-primary: #edf2fa;
   --wrapper-height: 87vh;
-  --font-family: "HK Grotesk";
 }
 
 * {
@@ -14,21 +13,8 @@
   display: none !important;
 }
 
-/* Import fonts */
-@font-face {
-  font-family: HK Grotesk;
-  src: url("https://cdn.glitch.me/605e2a51-d45f-4d87-a285-9410ad350515%2FHKGrotesk-Regular.otf?v=1603136326027")
-    format("opentype");
-}
-@font-face {
-  font-family: HK Grotesk;
-  font-weight: bold;
-  src: url("https://cdn.glitch.me/605e2a51-d45f-4d87-a285-9410ad350515%2FHKGrotesk-Bold.otf?v=1603136323437")
-    format("opentype");
-}
-
 body {
-  font-family: HK Grotesk;
+  font-family: sans-serif;
   background-color: var(--color-bg);
   overflow: hidden;
   margin: 0;

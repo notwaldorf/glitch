@@ -3,7 +3,6 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="icon" href="https://glitch.com/favicon.ico" />
     <title>Cello practice</title>
     <script src="https://cdn.jsdelivr.net/npm/vexflow@4.2.2/build/cjs/vexflow.js"></script>
 
@@ -15,7 +14,10 @@
       <h2>Cello practice on the go</h2>
 
       <div class="horizontal">
-        <div>key</div>
+        <div>string</div>
+        <button onclick="switchKey(event)" data-key="A">
+          A
+        </button>
         <button onclick="switchKey(event)" class="active" data-key="D">
           D
         </button>
