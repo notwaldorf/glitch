@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cello Alphabet</title>
+  <link
+      href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@100..900&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/vexflow@4.2.2/build/cjs/vexflow.js"></script>
+</head>
+<body>
+
+<header>
+  <h1>Cello<span>Alphabet</span></h1>
+</header>
+
+<div class="string-selector">
+  <span class="selector-label">which strings</span>
+  <div class="string-buttons">
+    <button class="string-btn" data-string="C">C</button>
+    <button class="string-btn" data-string="G">G</button>
+    <button class="string-btn active" data-string="D">D</button>
+    <button class="string-btn" data-string="A">A</button>
+  </div>
+</div>
+
+<div class="scene" id="scene" onclick="flipCard()">
+  <div class="card" id="card">
+    <!-- Front: staff with note -->
+    <div class="card-face card-front">
+      <span class="corner-tag">Front</span>
+      <div id="vex-container"></div>
+    </div>
+    <!-- Back: letter name -->
+    <div class="card-face card-back">
+      <span class="corner-tag">Back</span>
+      <div class="note-label" id="note-letter">C</div>
+      <div class="note-sublabel" id="note-octave">String · Octave</div>
+    </div>
+  </div>
+</div>
+
+<div class="flip-hint" id="flip-hint">click card to reveal</div>
+
+<div class="controls">
+  <button class="btn-secondary" onclick="markWrong()" id="btn-wrong">✗ Again</button>
+  <!-- <button class="btn-primary" onclick="nextCard()">Next →</button> -->
+  <button class="btn-secondary" onclick="markCorrect()" id="btn-correct">✓ Got it</button>
+</div>
+
+<div class="score-row">
+  <div class="correct">Correct: <b id="score-correct">0</b></div>
+  <div class="wrong">Wrong: <b id="score-wrong">0</b></div>
+</div>
+
+<footer>
+  Made by <a href="https://meowni.ca">Monica</a>. Refresh the page to restart.
+  See other <a href="../index.html">music morsels</a>.
+</footer>
+<!-- <div class="counter" id="counter">Card <span>1</span> of 14</div> -->
+
+<script src="app.js"></script>
+</body>
+</html>
