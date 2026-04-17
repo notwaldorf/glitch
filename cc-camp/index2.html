@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Monica Dinculescu — Code is Just Another Drawing Tool</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=VT323&family=Press+Start+2P&family=Special+Elite&display=swap');
+
+    :root {
+      --teal: #008080;
+      --navy: #000080;
+      --silver: #c0c0c0;
+      --lime: #00ff00;
+      --yellow: #ffff00;
+      --fuchsia: #ff00ff;
+      --white: #ffffff;
+      --black: #000000;
+      --bg: #008080;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      font-family: 'VT323', monospace;
+      color: var(--black);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20'%3E%3Cpolygon points='0,0 0,16 4,12 7,19 9,18 6,11 11,11' fill='white' stroke='black' stroke-width='1'/%3E%3C/svg%3E") 0 0, default;
+    }
+
+    /* Tiled desktop background pattern */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: repeating-linear-gradient(
+        45deg,
+        rgba(0,0,128,0.08) 0px,
+        rgba(0,0,128,0.08) 1px,
+        transparent 1px,
+        transparent 10px
+      );
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Taskbar */
+    .taskbar {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      height: 32px;
+      background: var(--silver);
+      border-top: 2px solid var(--white);
+      display: flex;
+      align-items: center;
+      padding: 0 4px;
+      gap: 8px;
+      z-index: 100;
+      font-family: 'VT323', monospace;
+      font-size: 16px;
+    }
+
+    .start-btn {
+      background: var(--silver);
+      border: 2px outset var(--white);
+      padding: 2px 8px;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 7px;
+      cursor: pointer;
+      display: flex; align-items: center; gap: 4px;
+    }
+    .start-btn:active { border-style: inset; }
+
+    .taskbar-clock {
+      margin-left: auto;
+      background: var(--silver);
+      border: 2px inset var(--white);
+      padding: 2px 8px;
+      font-size: 15px;
+    }
+
+    .taskbar-item {
+      background: var(--silver);
+      border: 2px outset var(--white);
+      padding: 2px 10px;
+      font-size: 13px;
+    }
+
+    /* Window */
+    .window {
+      position: relative;
+      z-index: 10;
+      width: min(820px, 96vw);
+      background: var(--silver);
+      border: 3px outset var(--white);
+      box-shadow: 4px 4px 0 #444;
+      display: flex;
+      flex-direction: column;
+      max-height: calc(100vh - 60px);
+    }
+
+    .title-bar {
+      background: linear-gradient(to right, var(--navy), #1084d0);
+      color: var(--white);
+      padding: 4px 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 7px;
+      user-select: none;
+    }
+
+    .title-bar-left {
+      display: flex; align-items: center; gap: 6px;
+    }
+
+    .title-icon { font-size: 14px; }
+
+    .title-controls {
+      display: flex; gap: 3px;
+    }
+
+    .win-btn {
+      width: 16px; height: 14px;
+      background: var(--silver);
+      border: 2px outset var(--white);
+      font-size: 9px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      color: var(--black);
+      font-family: 'VT323', monospace;
+      line-height: 1;
+    }
+    .win-btn:active { border-style: inset; }
+
+    /* Menu bar */
+    .menu-bar {
+      background: var(--silver);
+      border-bottom: 1px solid #888;
+      padding: 2px 6px;
+      display: flex;
+      gap: 4px;
+      font-size: 14px;
+    }
+
+    .menu-item {
+      padding: 1px 8px;
+      cursor: pointer;
+    }
+    .menu-item:hover { background: var(--navy); color: var(--white); }
+
+    /* Slide area */
+    .slide-container {
+      flex: 1;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .slide {
+      display: none;
+      flex-direction: column;
+      height: 100%;
+      padding: 24px 32px;
+      animation: slideIn 0.15s ease-out;
+    }
+
+    .slide.active { display: flex; }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateX(10px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+
+    /* Slide themes — each slide has its own vibe */
+    .slide-0 { background: #000080; color: var(--white); }
+    .slide-1 { background: #ffffff; color: #000000; }
+    .slide-2 { background: #ffffcc; color: #000080; }
+    .slide-3 { background: #000000; color: var(--lime); }
+    .slide-4 { background: #fff0f5; color: #800040; }
+    .slide-5 { background: #e8f4e8; color: #004000; }
+    .slide-6 { background: #000080; color: #ffff00; }
+
+    .slide-label {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 7px;
+      opacity: 0.7;
+      margin-bottom: 10px;
+      letter-spacing: 1px;
+    }
+
+    .slide-time {
+      font-family: 'VT323', monospace;
+      font-size: 18px;
+      opacity: 0.6;
+      margin-bottom: 4px;
+    }
+
+    .slide-title {
+      font-family: 'Press Start 2P', monospace;
+      font-size: clamp(10px, 2vw, 15px);
+      line-height: 1.7;
+      margin-bottom: 20px;
+      border-bottom: 3px double currentColor;
+      padding-bottom: 12px;
+    }
+
+    .slide-0 .slide-title {
+      font-size: clamp(9px, 1.8vw, 13px);
+      border-bottom: none;
+      text-align: center;
+    }
+
+    .slide-subtitle {
+      font-family: 'VT323', monospace;
+      font-size: 22px;
+      opacity: 0.75;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .slide-body {
+      font-family: 'VT323', monospace;
+      font-size: clamp(18px, 2.5vw, 22px);
+      line-height: 1.6;
+      flex: 1;
+    }
+
+    .bullet {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 10px;
+      align-items: flex-start;
+    }
+
+    .bullet-icon { flex-shrink: 0; }
+
+    em {
+      font-style: normal;
+      background: var(--yellow);
+      color: var(--black);
+      padding: 0 3px;
+    }
+
+    .slide-0 em {
+      background: var(--fuchsia);
+      color: var(--white);
+    }
+
+    .slide-3 em {
+      background: var(--lime);
+      color: var(--black);
+    }
+
+    .slide-6 em {
+      background: var(--fuchsia);
+      color: var(--white);
+    }
+
+    /* Hero slide decorations */
+    .hero-art {
+      text-align: center;
+      font-size: clamp(32px, 8vw, 60px);
+      margin: 12px 0;
+      animation: blink-art 2s step-end infinite;
+      letter-spacing: 4px;
+    }
+
+    @keyframes blink-art {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    .hero-tag {
+      font-family: 'VT323', monospace;
+      font-size: 16px;
+      color: var(--lime);
+      text-align: center;
+      margin-top: 6px;
+      letter-spacing: 2px;
+    }
+
+    .marquee-wrap {
+      overflow: hidden;
+      border-top: 2px solid var(--fuchsia);
+      border-bottom: 2px solid var(--fuchsia);
+      margin: 12px 0;
+      padding: 4px 0;
+    }
+
+    .marquee-text {
+      white-space: nowrap;
+      display: inline-block;
+      animation: marquee 14s linear infinite;
+      font-family: 'VT323', monospace;
+      font-size: 18px;
+      color: var(--fuchsia);
+    }
+
+    @keyframes marquee {
+      from { transform: translateX(100vw); }
+      to   { transform: translateX(-100%); }
+    }
+
+    /* Highlight box */
+    .highlight-box {
+      border: 3px double currentColor;
+      padding: 10px 14px;
+      margin-top: 14px;
+      font-family: 'Special Elite', serif;
+      font-size: clamp(14px, 2vw, 17px);
+      line-height: 1.5;
+      background: rgba(255,255,255,0.12);
+    }
+
+    /* Under construction gif style badge */
+    .badge {
+      display: inline-block;
+      background: var(--yellow);
+      color: var(--black);
+      font-family: 'Press Start 2P', monospace;
+      font-size: 7px;
+      padding: 4px 8px;
+      border: 2px solid var(--black);
+      margin-bottom: 10px;
+      animation: badge-flash 1s step-end infinite;
+    }
+
+    @keyframes badge-flash {
+      0%, 100% { background: var(--yellow); }
+      50% { background: var(--fuchsia); color: var(--white); }
+    }
+
+    /* Progress bar */
+    .slide-footer {
+      background: var(--silver);
+      border-top: 2px inset var(--white);
+      padding: 4px 10px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 13px;
+    }
+
+    .progress-bar-wrap {
+      flex: 1;
+      height: 14px;
+      background: var(--white);
+      border: 2px inset #888;
+      overflow: hidden;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      background: var(--navy);
+      transition: width 0.3s ease;
+    }
+
+    .slide-counter {
+      font-family: 'VT323', monospace;
+      font-size: 15px;
+      white-space: nowrap;
+    }
+
+    /* Nav buttons */
+    .nav-area {
+      display: flex;
+      gap: 6px;
+    }
+
+    .nav-btn {
+      background: var(--silver);
+      border: 2px outset var(--white);
+      font-family: 'Press Start 2P', monospace;
+      font-size: 8px;
+      padding: 4px 10px;
+      cursor: pointer;
+      color: var(--black);
+    }
+    .nav-btn:active { border-style: inset; }
+    .nav-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    /* Keyboard hint */
+    .key-hint {
+      font-family: 'VT323', monospace;
+      font-size: 13px;
+      color: #555;
+      white-space: nowrap;
+    }
+
+    /* Scanline overlay */
+    .scanlines {
+      pointer-events: none;
+      position: fixed;
+      inset: 0;
+      z-index: 50;
+      background: repeating-linear-gradient(
+        to bottom,
+        transparent 0px,
+        transparent 3px,
+        rgba(0,0,0,0.04) 3px,
+        rgba(0,0,0,0.04) 4px
+      );
+    }
+  </style>
+</head>
+<body>
+
+<div class="scanlines"></div>
+
+<div class="window">
+  <div class="title-bar">
+    <div class="title-bar-left">
+      <span class="title-icon">🖥️</span>
+      <span>Monica Dinculescu — Code is Just Another Drawing Tool.ppt</span>
+    </div>
+    <div class="title-controls">
+      <div class="win-btn">_</div>
+      <div class="win-btn">□</div>
+      <div class="win-btn">✕</div>
+    </div>
+  </div>
+
+  <div class="menu-bar">
+    <span class="menu-item">File</span>
+    <span class="menu-item">Edit</span>
+    <span class="menu-item">View</span>
+    <span class="menu-item">Slide Show</span>
+    <span class="menu-item">Help</span>
+  </div>
+
+  <div class="slide-container">
+
+    <!-- SLIDE 0: Title -->
+    <div class="slide slide-0 active">
+      <div class="slide-label">SLIDE 01 / 07 — TITLE</div>
+      <div class="hero-art">🎨 💻 ✨</div>
+      <div class="slide-title">Code is Just Another<br>Drawing Tool</div>
+      <div class="slide-subtitle">A 10-minute talk by Monica Dinculescu</div>
+      <div class="marquee-wrap">
+        <span class="marquee-text">
+          ★ creative coder ★ generative artist ★ ex-Google engineer ★ emoji enthusiast ★ painter ★ linocutter ★ builder of silly things ★ &nbsp;&nbsp;&nbsp;
+        </span>
+      </div>
+      <div class="hero-tag">[ CC FEST CODING CAMP — SPRING 2026 ]</div>
+    </div>
+
+    <!-- SLIDE 1: Who she is -->
+    <div class="slide slide-1">
+      <div class="slide-label">SLIDE 02 / 07</div>
+      <div class="slide-title">Who I Am<br>(and why I'm not just a coder)</div>
+      <div class="slide-body">
+        <div class="bullet"><span class="bullet-icon">🏭</span><span>8 years as Senior Engineer at Google — Chrome, web components, ML</span></div>
+        <div class="bullet"><span class="bullet-icon">🎲</span><span>Generative artist: <em>code that introduces randomness</em>, then curates hundreds of outputs</span></div>
+        <div class="bullet"><span class="bullet-icon">🖌️</span><span>Now paints in acrylic & linocuts — making things she can hold</span></div>
+        <div class="bullet"><span class="bullet-icon">🔗</span><span>The throughline: always asking <em>"what can I make?"</em> not "how does this work?"</span></div>
+        <div class="highlight-box">
+          Sound familiar? You just did the same thing — you asked what <em>your</em> shapes could say.
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 2: Your postcard but alive -->
+    <div class="slide slide-2">
+      <div class="slide-label">SLIDE 03 / 07</div>
+      <div class="slide-time">⏱ 2–5 min</div>
+      <div class="slide-title">Your Postcard,<br>But Alive</div>
+      <div class="slide-body">
+        <div class="bullet"><span class="bullet-icon">📬</span><span>What if your static shapes started <em>moving</em>, or responded to a cursor?</span></div>
+        <div class="bullet"><span class="bullet-icon">🌸</span><span>Emoji Garden: a random garden generator — people remixed it endlessly</span></div>
+        <div class="bullet"><span class="bullet-icon">🎵</span><span>Magenta experiments: ML generating music from simple inputs</span></div>
+        <div class="bullet"><span class="bullet-icon">💡</span><span>All of it built from the same <em>rect(), ellipse(), circle()</em> you used today</span></div>
+        <div class="highlight-box">
+          Nothing new was added. Just time, curiosity, and one more question asked.
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 3: Build silly things -->
+    <div class="slide slide-3">
+      <div class="slide-label">SLIDE 04 / 07</div>
+      <div class="slide-time">⏱ 5–7 min</div>
+      <div class="slide-title">Build Silly<br>Things</div>
+      <div class="slide-body">
+        <div class="bullet"><span class="bullet-icon">🐣</span><span>Her most-remixed project? A random emoji garden. A <em>joke</em>.</span></div>
+        <div class="bullet"><span class="bullet-icon">🔁</span><span>Playful projects invite others in — they remix, extend, make it theirs</span></div>
+        <div class="bullet"><span class="bullet-icon">🏫</span><span>For educators: <em>low-stakes prompts unlock more</em> than serious ones</span></div>
+        <div class="bullet"><span class="bullet-icon">📌</span><span>This is why Saber offered: "make a logo," "remix an album cover" — not just "tell your story"</span></div>
+        <div class="highlight-box">
+          The sillier the seed, the wilder the garden.
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 4: AI boom -->
+    <div class="slide slide-4">
+      <div class="slide-label">SLIDE 05 / 07</div>
+      <div class="slide-time">⏱ 7–9 min</div>
+      <div class="badge">★ NEW ★ RELEVANT ★ HOT TAKE ★</div>
+      <div class="slide-title">Why This Matters<br>in the Age of AI</div>
+      <div class="slide-body">
+        <div class="bullet"><span class="bullet-icon">🤖</span><span>AI can generate images, write code, and compose music on demand</span></div>
+        <div class="bullet"><span class="bullet-icon">📊</span><span><em>AI is great at the average.</em> You are the only one with your specific voice.</span></div>
+        <div class="bullet"><span class="bullet-icon">🎯</span><span>Deciding which of 500 outputs feels right — that's <em>taste</em>. No model has it for you.</span></div>
+        <div class="bullet"><span class="bullet-icon">👩‍🏫</span><span>Students who make intentional creative choices with code are building the skill AI can't replicate</span></div>
+        <div class="highlight-box">
+          p5.js — with its immediate visual feedback — is one of the best places on Earth to develop that judgment.
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 5: What comes next -->
+    <div class="slide slide-5">
+      <div class="slide-label">SLIDE 06 / 07</div>
+      <div class="slide-time">⏱ 9–10 min</div>
+      <div class="slide-title">What Comes<br>Next for You</div>
+      <div class="slide-body">
+        <div class="bullet"><span class="bullet-icon">🔜</span><span>ML, interactivity, animation — not a different world. <em>Just more sessions.</em></span></div>
+        <div class="bullet"><span class="bullet-icon">🔲</span><span>Every generative system Monica builds still uses rect() and ellipse()</span></div>
+        <div class="bullet"><span class="bullet-icon">🖼️</span><span>Generative art = making 500 things and <em>choosing the one that feels right</em></span></div>
+        <div class="bullet"><span class="bullet-icon">🧠</span><span>That's not engineering. That's artistic judgment.</span></div>
+        <div class="highlight-box">
+          And you already practiced it this morning.
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 6: Closing -->
+    <div class="slide slide-6">
+      <div class="slide-label">SLIDE 07 / 07 — FIN</div>
+      <div class="hero-art">🌟 🎨 🌟</div>
+      <div class="slide-title" style="text-align:center; border:none;">What you did<br>this morning<br>is the real thing.</div>
+      <div style="font-family:'VT323',monospace; font-size:20px; text-align:center; color:#ff00ff; margin-top:10px; line-height:1.8;">
+        Not a warm-up for it.<br>
+        And in a world full of AI-generated everything,<br>
+        <em>that judgment is the whole game.</em>
+      </div>
+      <div class="hero-tag" style="margin-top:16px;">[ THANK YOU — meowni.ca ]</div>
+    </div>
+
+  </div><!-- end slide-container -->
+
+  <div class="slide-footer">
+    <div class="nav-area">
+      <button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)" disabled>◀ PREV</button>
+      <button class="nav-btn" id="nextBtn" onclick="changeSlide(1)">NEXT ▶</button>
+    </div>
+    <div class="progress-bar-wrap">
+      <div class="progress-bar-fill" id="progressFill" style="width: 14.28%"></div>
+    </div>
+    <div class="slide-counter" id="slideCounter">Slide 1 of 7</div>
+    <div class="key-hint">← → keys</div>
+  </div>
+</div>
+
+<div class="taskbar">
+  <button class="start-btn">⊞ Start</button>
+  <div class="taskbar-item">🖥️ Monica_talk.ppt</div>
+  <div class="taskbar-clock" id="clock">12:00</div>
+</div>
+
+<script>
+  let current = 0;
+  const slides = document.querySelectorAll('.slide');
+  const total = slides.length;
+
+  function changeSlide(dir) {
+    slides[current].classList.remove('active');
+    current = Math.max(0, Math.min(total - 1, current + dir));
+    slides[current].classList.add('active');
+    updateUI();
+  }
+
+  function updateUI() {
+    document.getElementById('prevBtn').disabled = current === 0;
+    document.getElementById('nextBtn').disabled = current === total - 1;
+    document.getElementById('slideCounter').textContent = `Slide ${current + 1} of ${total}`;
+    const pct = ((current + 1) / total * 100).toFixed(2);
+    document.getElementById('progressFill').style.width = pct + '%';
+  }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') changeSlide(1);
+    if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   changeSlide(-1);
+  });
+
+  // Clock
+  function updateClock() {
+    const now = new Date();
+    const h = String(now.getHours()).padStart(2,'0');
+    const m = String(now.getMinutes()).padStart(2,'0');
+    document.getElementById('clock').textContent = `${h}:${m}`;
+  }
+  updateClock();
+  setInterval(updateClock, 10000);
+</script>
+</body>
+</html>
