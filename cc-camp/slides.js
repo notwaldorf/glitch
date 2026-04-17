@@ -18,7 +18,6 @@ function setSlide(n, pushState) {
   document.getElementById('slide-' + current).classList.add('active');
   
   document.getElementById('counter').textContent = `SLIDE ${getIntAsString(current)} OF ${getIntAsString(total)} `
-  document.querySelector(`#slide-${current} .slide-num`).textContent = `${getIntAsString(current)} / ${getIntAsString(total)}`;
   
   document.getElementById('prev-btn').disabled = current === 1;
   document.getElementById('next-btn').disabled = current === total;
