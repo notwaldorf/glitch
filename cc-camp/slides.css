@@ -30,6 +30,9 @@ html, body {
   padding: 20px;
 }
 
+a:link, a:visited {
+  color: blue;
+}
 .window {
   width: 780px;
   height: 580px;
