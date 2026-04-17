@@ -11,7 +11,8 @@ const SLIDER = document.querySelector('input[type=range]');
 init();
 
 async function init() {
-  allWords = await (await fetch('https://cdn.glitch.com/8bd11670-4f32-4ff1-8ab9-679abad0aaec%2Fglitch-friendly-words.json?v=1600378385448')).json();
+  const j = await (await fetch('./words.json')).json();
+  allWords = j.objects;
   next();
 }
 

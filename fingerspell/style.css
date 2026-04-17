@@ -1,16 +1,16 @@
 @font-face {
   font-family: "ASL";
-  src: url("https://cdn.glitch.com/8bd11670-4f32-4ff1-8ab9-679abad0aaec%2Fgallaudet_asl.ttf?v=1600448689548")
+  src: url("./GallaudetRegular.ttf")
     format("truetype");
 }
 @font-face {
   font-family: "Auslan";
-  src: url('https://cdn.glitch.com/8bd11670-4f32-4ff1-8ab9-679abad0aaec%2FAdmanGraphics_Auslan.ttf?v=1600448690277')
+  src: url('./AdmanGraphics_Auslan.ttf')
     format("truetype");
 }
 @font-face {
   font-family: "BSL";
-  src: url('https://cdn.glitch.com/8bd11670-4f32-4ff1-8ab9-679abad0aaec%2Fbsl.ttf?v=1600449270072')
+  src: url('./CommandingHandsBSL.otf')
     format("truetype");
 }
 
